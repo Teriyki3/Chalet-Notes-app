@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Center - Chalet Notes</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .help-hero {
+            padding: 120px 0 60px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .help-hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        
+        .help-hero p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+        
+        .search-box {
+            max-width: 500px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 16px 20px 16px 50px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            background: white;
+            color: var(--text-primary);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 18px;
+        }
+        
+        .help-main {
+            padding: 80px 0;
+            background: white;
+        }
+        
+        .help-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            margin-bottom: 80px;
+        }
+        
+        .category-card {
+            background: white;
+            padding: 40px 32px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-color);
+        }
+        
+        .category-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            color: white;
+            font-size: 32px;
+        }
+        
+        .category-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+        
+        .category-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .popular-articles {
+            background: var(--secondary-color);
+            padding: 80px 0;
+        }
+        
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 32px;
+            margin-top: 60px;
+        }
+        
+        .article-card {
+            background: white;
+            padding: 32px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        
+        .article-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .article-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+            text-decoration: none;
+            display: block;
+        }
+        
+        .article-title:hover {
+            color: var(--primary-color);
+        }
+        
+        .article-excerpt {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+        
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        .video-tutorials {
+            padding: 80px 0;
+            background: white;
+        }
+        
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            margin-top: 60px;
+        }
+        
+        .video-card {
+            background: white;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        
+        .video-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .video-thumbnail {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .play-button {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            transition: var(--transition);
+        }
+        
+        .play-button:hover {
+            background: var(--primary-hover);
+            transform: scale(1.1);
+        }
+        
+        .video-duration {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .video-content {
+            padding: 24px;
+        }
+        
+        .video-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+        
+        .video-description {
+            color: var(--text-secondary);
+            line-height: 1.5;
+            font-size: 0.9rem;
+        }
+        
+        .contact-support {
+            padding: 80px 0;
+            background: linear-gradient(135deg, var(--text-primary) 0%, #374151 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .contact-content h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        
+        .contact-content p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+        
+        .support-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 32px;
+            margin-top: 60px;
+        }
+        
+        .support-option {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 32px 24px;
+            border-radius: var(--border-radius);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+        }
+        
+        .support-option i {
+            font-size: 32px;
+            margin-bottom: 16px;
+            color: #60a5fa;
+        }
+        
+        .support-option h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        
+        .support-option p {
+            font-size: 0.95rem;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+        
+        .support-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-block;
+        }
+        
+        .support-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .help-hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .help-categories {
+                grid-template-columns: 1fr;
+            }
+            
+            .articles-grid,
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-content h2 {
+                font-size: 2rem;
+            }
+            
+            .support-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h2>Chalet Notes</h2>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="progress-notes.html" class="nav-link">Progress Notes</a>
+                <a href="organizations.html" class="nav-link">Organizations</a>
+                <a href="pricing.html" class="nav-link">Pricing</a>
+                <a href="blog.html" class="nav-link">Blog</a>
+                <a href="help.html" class="nav-link">Help</a>
+                <a href="reviews.html" class="nav-link">Reviews</a>
+                <a href="login.html" class="nav-btn">Login</a>
+                <a href="signup.html" class="nav-btn primary">Get Started</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="help-hero">
+            <div class="container">
+                <h1>How can we help you?</h1>
+                <p>Find answers to common questions, watch tutorials, and get the support you need to make the most of Chalet Notes</p>
+                
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Search for help articles, guides, and tutorials...">
+                </div>
+            </div>
+        </section>
+
+        <section class="help-main">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Browse by category</h2>
+                    <p>Find the help you need quickly</p>
+                </div>
+                
+                <div class="help-categories">
+                    <div class="category-card" onclick="location.href='#getting-started'">
+                        <div class="category-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <h3>Getting Started</h3>
+                        <p>Set up your account, record your first session, and generate your first AI-powered progress note.</p>
+                    </div>
+                    
+                    <div class="category-card" onclick="location.href='#recording-sessions'">
+                        <div class="category-icon">
+                            <i class="fas fa-microphone"></i>
+                        </div>
+                        <h3>Recording Sessions</h3>
+                        <p>Best practices for audio recording, troubleshooting recording issues, and managing session files.</p>
+                    </div>
+                    
+                    <div class="category-card" onclick="location.href='#note-generation'">
+                        <div class="category-icon">
+                            <i class="fas fa-file-text"></i>
+                        </div>
+                        <h3>Note Generation</h3>
+                        <p>Understanding different note formats, customizing templates, and editing AI-generated notes.</p>
+                    </div>
+                    
+                    <div class="category-card" onclick="location.href='#client-management'">
+                        <div class="category-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>Client Management</h3>
+                        <p>Adding clients, organizing records, tracking progress, and managing client information securely.</p>
+                    </div>
+                    
+                    <div class="category-card" onclick="location.href='#billing-exports'">
+                        <div class="category-icon">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <h3>Billing & Exports</h3>
+                        <p>Exporting notes to your EHR, generating billing reports, and integrating with practice management systems.</p>
+                    </div>
+                    
+                    <div class="category-card" onclick="location.href='#group-practices'">
+                        <div class="category-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <h3>Group Practices</h3>
+                        <p>Managing multiple clinicians, setting up organizations, and monitoring practice-wide performance.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="popular-articles">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Popular Articles</h2>
+                    <p>Most helpful articles from our knowledge base</p>
+                </div>
+                
+                <div class="articles-grid">
+                    <article class="article-card">
+                        <a href="#" class="article-title">How to record your first therapy session</a>
+                        <p class="article-excerpt">Step-by-step guide to recording your first session with Chalet Notes, including audio setup, client consent, and recording best practices.</p>
+                        <div class="article-meta">
+                            <span><i class="fas fa-eye"></i> 2,847 views</span>
+                            <span><i class="fas fa-thumbs-up"></i> 94% helpful</span>
+                        </div>
+                    </article>
+                    
+                    <article class="article-card">
+                        <a href="#" class="article-title">Understanding SOAP note structure</a>
+                        <p class="article-excerpt">Complete breakdown of SOAP note components with examples and tips for writing effective clinical documentation.</p>
+                        <div class="article-meta">
+                            <span><i class="fas fa-eye"></i> 1,923 views</span>
+                            <span><i class="fas fa-thumbs-up"></i> 97% helpful</span>
+                        </div>
+                    </article>
+                    
+                    <article class="article-card">
+                        <a href="#" class="article-title">Troubleshooting audio recording issues</a>
+                        <p class="article-excerpt">Common recording problems and their solutions, including microphone setup, audio quality optimization, and technical support.</p>
+                        <div class="article-meta">
+                            <span><i class="fas fa-eye"></i> 1,456 views</span>
+                            <span><i class="fas fa-thumbs-up"></i> 89% helpful</span>
+                        </div>
+                    </article>
+                    
+                    <article class="article-card">
+                        <a href="#" class="article-title">HIPAA compliance and data security</a>
+                        <p class="article-excerpt">How Chalet Notes ensures HIPAA compliance, data encryption standards, and best practices for maintaining client privacy.</p>
+                        <div class="article-meta">
+                            <span><i class="fas fa-eye"></i> 1,234 views</span>
+                            <span><i class="fas fa-thumbs-up"></i> 92% helpful</span>
+                        </div>
+                    </article>
+                    
+                    <article class="article-card">
+                        <a href="#" class="article-title">Exporting notes to your EHR system</a>
+                        <p class="article-excerpt">Guide to exporting Chalet Notes notes to popular EHR systems including format options and integration setup.</p>
+                        <div class="article-meta">
+                            <span><i class="fas fa-eye"></i> 987 views</span>
+                            <span><i class="fas fa-thumbs-up"></i> 95% helpful</span>
+                        </div>
+                    </article>
+                    
+                    <article class="article-card">
+                        <a href="#" class="article-title">Setting up your group practice</a>
+                        <p class="article-excerpt">Complete guide to configuring Chalet Notes for group practices, including user roles, permissions, and practice management features.</p>
+                        <div class="article-meta">
+                            <span><i class="fas fa-eye"></i> 756 views</span>
+                            <span><i class="fas fa-thumbs-up"></i> 98% helpful</span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="video-tutorials">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Video Tutorials</h2>
+                    <p>Watch and learn with our step-by-step video guides</p>
+                </div>
+                
+                <div class="video-grid">
+                    <div class="video-card">
+                        <div class="video-thumbnail">
+                            <div class="play-button">
+                                <i class="fas fa-play"></i>
+                            </div>
+                            <div class="video-duration">5:32</div>
+                        </div>
+                        <div class="video-content">
+                            <h4 class="video-title">Getting Started with Chalet Notes</h4>
+                            <p class="video-description">Complete walkthrough of setting up your account and recording your first session.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="video-card">
+                        <div class="video-thumbnail">
+                            <div class="play-button">
+                                <i class="fas fa-play"></i>
+                            </div>
+                            <div class="video-duration">3:47</div>
+                        </div>
+                        <div class="video-content">
+                            <h4 class="video-title">Customizing Note Templates</h4>
+                            <p class="video-description">Learn how to create and customize note templates to match your practice needs.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="video-card">
+                        <div class="video-thumbnail">
+                            <div class="play-button">
+                                <i class="fas fa-play"></i>
+                            </div>
+                            <div class="video-duration">4:15</div>
+                        </div>
+                        <div class="video-content">
+                            <h4 class="video-title">Managing Client Records</h4>
+                            <p class="video-description">Organize and manage your client database effectively with Chalet Notes's tools.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="video-card">
+                        <div class="video-thumbnail">
+                            <div class="play-button">
+                                <i class="fas fa-play"></i>
+                            </div>
+                            <div class="video-duration">6:23</div>
+                        </div>
+                        <div class="video-content">
+                            <h4 class="video-title">Group Practice Setup</h4>
+                            <p class="video-description">Step-by-step guide to setting up Chalet Notes for your group practice or organization.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="contact-support">
+            <div class="container">
+                <div class="contact-content">
+                    <h2>Still need help?</h2>
+                    <p>Our support team is here to help you succeed with Chalet Notes</p>
+                    
+                    <div class="support-options">
+                        <div class="support-option">
+                            <i class="fas fa-comments"></i>
+                            <h4>Live Chat</h4>
+                            <p>Get instant help from our support team during business hours.</p>
+                            <a href="#chat" class="support-btn">Start Chat</a>
+                        </div>
+                        
+                        <div class="support-option">
+                            <i class="fas fa-envelope"></i>
+                            <h4>Email Support</h4>
+                            <p>Send us a detailed message and we'll respond within 24 hours.</p>
+                            <a href="mailto:support@blueprint.ai" class="support-btn">Email Us</a>
+                        </div>
+                        
+                        <div class="support-option">
+                            <i class="fas fa-phone"></i>
+                            <h4>Phone Support</h4>
+                            <p>Speak directly with our technical support specialists.</p>
+                            <a href="tel:1-800-BLUEPRINT" class="support-btn">Call Now</a>
+                        </div>
+                        
+                        <div class="support-option">
+                            <i class="fas fa-calendar"></i>
+                            <h4>Schedule a Demo</h4>
+                            <p>Get a personalized walkthrough of Chalet Notes's features.</p>
+                            <a href="#schedule" class="support-btn">Book Demo</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Chalet Notes</h3>
+                    <p>AI-powered clinical documentation for mental health professionals.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="progress-notes.html">Progress Notes</a></li>
+                        <li><a href="organizations.html">Organizations</a></li>
+                        <li><a href="pricing.html">Pricing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="help.html">Help Center</a></li>
+                        <li><a href="reviews.html">Reviews</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#privacy">Privacy</a></li>
+                        <li><a href="#terms">Terms</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Chalet Notes. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Search functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.querySelector('.search-input');
+            
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const query = this.value.trim();
+                    if (query) {
+                        console.log('Searching for:', query);
+                        // Implement search functionality here
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,2789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Chalet Notes</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            background: #f8fafc;
+        }
+        
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+        
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .sidebar-logo {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        
+        .user-details h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+        
+        .user-details p {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .sidebar-nav {
+            padding: 24px 0;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        .nav-item:hover,
+        .nav-item.active {
+            background: var(--secondary-color);
+            color: var(--primary-color);
+            border-right: 3px solid var(--primary-color);
+        }
+        
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 24px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 12px;
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .logout-btn:hover {
+            background: var(--error-color);
+            color: white;
+            border-color: var(--error-color);
+        }
+        
+        .main-content {
+            flex: 1;
+            overflow: auto;
+        }
+        
+        .dashboard-header {
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 32px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        
+        .dashboard-body {
+            padding: 32px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+        
+        .dashboard-card {
+            background: white;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+        
+        .card-header {
+            padding: 24px 24px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .card-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        .card-body {
+            padding: 24px;
+        }
+        
+        .recording-section {
+            text-align: center;
+        }
+        
+        .record-button {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            color: white;
+            font-size: 32px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .record-button:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .record-button.recording {
+            background: var(--error-color);
+            animation: pulse 2s infinite;
+        }
+        
+        .record-button.recording::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 4px;
+            transform: translate(-50%, -50%);
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        
+        .recording-status {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+        
+        .recording-time {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            font-family: 'Courier New', monospace;
+            margin-bottom: 16px;
+        }
+        
+        .recording-controls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .control-btn {
+            padding: 8px 16px;
+            border: 1px solid var(--border-color);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.875rem;
+        }
+        
+        .control-btn:hover {
+            background: var(--secondary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .client-selector {
+            margin-bottom: 24px;
+        }
+        
+        .client-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+        }
+        
+        .client-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .transcription-area {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 200px;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+        
+        .transcription-placeholder {
+            color: var(--text-secondary);
+            font-style: italic;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .notes-section {
+            grid-column: 1 / -1;
+        }
+        
+        .notes-tabs {
+            display: flex;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+        
+        .notes-tab {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: var(--transition);
+        }
+        
+        .notes-tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+        
+        .notes-content {
+            display: none;
+        }
+        
+        .notes-content.active {
+            display: block;
+        }
+        
+        .note-editor {
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+        }
+        
+        .editor-toolbar {
+            background: var(--secondary-color);
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .toolbar-btn {
+            padding: 6px 12px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: var(--transition);
+        }
+        
+        .toolbar-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .note-textarea {
+            width: 100%;
+            min-height: 300px;
+            border: none;
+            padding: 20px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: vertical;
+        }
+        
+        .note-textarea:focus {
+            outline: none;
+        }
+        
+        .note-actions {
+            padding: 16px 20px;
+            background: var(--secondary-color);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .note-actions-left {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        
+        .recent-sessions {
+            grid-column: 1 / -1;
+        }
+        
+        .sessions-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .sessions-table th,
+        .sessions-table td {
+            text-align: left;
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .sessions-table th {
+            background: var(--secondary-color);
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+        
+        .sessions-table td {
+            color: var(--text-secondary);
+        }
+        
+        .session-client {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .session-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-completed {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .status-draft {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .status-processing {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .view-btn {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+        
+        .view-btn:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s ease;
+            }
+            
+            .sidebar.open {
+                left: 0;
+            }
+            
+            .mobile-menu-btn {
+                display: inline-flex !important;
+            }
+            
+            .dashboard-header {
+                padding: 16px 20px;
+            }
+            
+            .dashboard-body {
+                padding: 20px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .sessions-table {
+                font-size: 0.875rem;
+            }
+            
+            .sessions-table th,
+            .sessions-table td {
+                padding: 12px 8px;
+            }
+        }
+        
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+        
+        .modal {
+            background: white;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .modal-header {
+            padding: 24px 24px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .modal-header h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+        
+        .modal-close:hover {
+            background: var(--secondary-color);
+            color: var(--text-primary);
+        }
+        
+        .modal-body {
+            padding: 24px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+        
+        /* Dashboard Animations */
+        .dashboard-card {
+            transition: var(--transition);
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .stat-card {
+            transition: var(--transition);
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+        
+        .stat-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .nav-item {
+            transition: var(--transition);
+        }
+        
+        .nav-item:hover {
+            transform: translateX(4px);
+        }
+        
+        .sidebar {
+            animation: slideInLeft 0.5s ease-out;
+        }
+        
+        .main-content {
+            animation: slideInRight 0.5s ease-out;
+        }
+        
+        .sessions-table tbody tr {
+            transition: var(--transition);
+        }
+        
+        .sessions-table tbody tr:hover {
+            background: var(--secondary-color);
+            transform: translateX(4px);
+        }
+        
+        .btn {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .toolbar-btn {
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .toolbar-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+        
+        .toolbar-btn:hover::before {
+            width: 100px;
+            height: 100px;
+        }
+        
+        .modal-overlay {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .modal {
+            animation: modalSlideIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        /* Loading animation for AI tools */
+        .ai-loading {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ai-loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        /* Pulse animation for status indicators */
+        .status-indicator {
+            animation: pulse 2s infinite;
+        }
+        
+        /* Enhanced recording button animation */
+        .record-button {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .record-button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: scale(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .record-button:hover::before {
+            transform: scale(1);
+        }
+        
+        .client-select {
+            transition: var(--transition);
+        }
+        
+        .client-select:focus {
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">Chalet Notes</div>
+                <div class="user-info">
+                    <div class="user-avatar" id="user-avatar">GN</div>
+                    <div class="user-details">
+                        <h4 id="user-name">Dr. Gisele Nzeukou</h4>
+                        <p id="user-title">Caregiver</p>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-item active" data-view="dashboard">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#record" class="nav-item" data-view="record">
+                    <i class="fas fa-microphone"></i>
+                    <span>Record Session</span>
+                </a>
+                <a href="#notes" class="nav-item" data-view="notes">
+                    <i class="fas fa-file-text"></i>
+                    <span>Progress Notes</span>
+                </a>
+                <a href="#clients" class="nav-item" data-view="clients">
+                    <i class="fas fa-users"></i>
+                    <span>Client Management</span>
+                </a>
+                <a href="#analytics" class="nav-item" data-view="analytics">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="#settings" class="nav-item" data-view="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button class="logout-btn" onclick="window.auth.logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+        
+        <main class="main-content">
+            <header class="dashboard-header">
+                <div class="header-content">
+                    <h1 class="page-title" id="page-title">Dashboard</h1>
+                    <div class="header-actions">
+                        <button class="btn secondary mobile-menu-btn" id="mobile-menu-btn" style="display: none;">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <button class="btn primary" onclick="showView('record')">
+                            <i class="fas fa-plus"></i>
+                            New Recording
+                        </button>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="dashboard-body">
+                <!-- Dashboard Overview -->
+                <div class="dashboard-view" id="dashboard-view">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="sessions-count">24</div>
+                            <div class="stat-label">Sessions This Month</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="notes-count">22</div>
+                            <div class="stat-label">Notes Generated</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="clients-count">18</div>
+                            <div class="stat-label">Active Clients</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="time-saved">12h</div>
+                            <div class="stat-label">Time Saved</div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card recent-sessions">
+                        <div class="card-header">
+                            <h3 class="card-title">Recent Sessions</h3>
+                            <p class="card-subtitle">Your latest recorded therapy sessions</p>
+                        </div>
+                        <div class="card-body">
+                            <table class="sessions-table">
+                                <thead>
+                                    <tr>
+                                        <th>Client</th>
+                                        <th>Date</th>
+                                        <th>Duration</th>
+                                        <th>Note Type</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sessions-table-body">
+                                    <tr>
+                                        <td class="session-client">Sarah Johnson</td>
+                                        <td>Dec 15, 2024</td>
+                                        <td>50 mins</td>
+                                        <td>SOAP</td>
+                                        <td><span class="session-status status-completed">Completed</span></td>
+                                        <td><a href="#" class="view-btn">View</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="session-client">Michael Chen</td>
+                                        <td>Dec 15, 2024</td>
+                                        <td>45 mins</td>
+                                        <td>BIRP</td>
+                                        <td><span class="session-status status-draft">Draft</span></td>
+                                        <td><a href="#" class="view-btn">Edit</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="session-client">Emily Davis</td>
+                                        <td>Dec 14, 2024</td>
+                                        <td>60 mins</td>
+                                        <td>DAP</td>
+                                        <td><span class="session-status status-processing">Processing</span></td>
+                                        <td><a href="#" class="view-btn">View</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recording View -->
+                <div class="dashboard-view" id="record-view" style="display: none;">
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <h3 class="card-title">Record Session</h3>
+                                <p class="card-subtitle">Start recording your therapy session</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="client-selector">
+                                    <select class="client-select" id="session-client">
+                                        <option value="">Select a client...</option>
+                                    </select>
+                                    <button class="btn secondary" id="add-new-client-btn" style="margin-top: 12px; width: 100%;">
+                                        <i class="fas fa-plus"></i> Add New Client
+                                    </button>
+                                </div>
+                                
+                                <div class="recording-section">
+                                    <button class="record-button" id="record-btn">
+                                        <i class="fas fa-microphone"></i>
+                                    </button>
+                                    <div class="recording-status" id="recording-status">Ready to Record</div>
+                                    <div class="recording-time" id="recording-time">00:00</div>
+                                    
+                                    <div class="recording-controls">
+                                        <button class="control-btn" id="pause-btn" disabled>
+                                            <i class="fas fa-pause"></i> Pause
+                                        </button>
+                                        <button class="control-btn" id="save-btn" disabled>
+                                            <i class="fas fa-save"></i> Save
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <h3 class="card-title">Live Transcription</h3>
+                                <p class="card-subtitle">Real-time speech-to-text</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="transcription-area" id="transcription-area">
+                                    <div class="transcription-placeholder">
+                                        Transcription will appear here when you start recording...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Notes View -->
+                <div class="dashboard-view" id="notes-view" style="display: none;">
+                    <div class="dashboard-card notes-section">
+                        <div class="card-header">
+                            <h3 class="card-title">AI-Generated Progress Notes</h3>
+                            <p class="card-subtitle">Review and edit your session notes</p>
+                        </div>
+                        <div class="card-body">
+                            <div class="notes-tabs">
+                                <button class="notes-tab active" data-format="soap">SOAP</button>
+                                <button class="notes-tab" data-format="birp">BIRP</button>
+                                <button class="notes-tab" data-format="dap">DAP</button>
+                                <button class="notes-tab" data-format="girp">GIRP</button>
+                                <button class="notes-tab" data-format="freeform">Freeform</button>
+                            </div>
+                            
+                            <div class="notes-content active" id="soap-content">
+                                <div class="note-editor">
+                                    <div class="editor-toolbar">
+                                        <button class="toolbar-btn" onclick="regenerateNote('soap')">
+                                            <i class="fas fa-robot"></i> Regenerate
+                                        </button>
+                                        <button class="toolbar-btn" onclick="enhanceNote('soap')">
+                                            <i class="fas fa-magic"></i> Enhance
+                                        </button>
+                                        <button class="toolbar-btn" onclick="spellCheckNote('soap')">
+                                            <i class="fas fa-spell-check"></i> Spell Check
+                                        </button>
+                                    </div>
+                                    <textarea class="note-textarea" placeholder="AI-generated notes will appear here...">
+**SUBJECTIVE:**
+Client reports feeling "more anxious than usual" over the past week. States that work stress has increased due to upcoming project deadlines. Sleep has been disrupted with frequent awakening around 3 AM. Reports using deep breathing techniques learned in previous sessions with "some success."
+
+**OBJECTIVE:**
+Client appeared slightly restless during session, fidgeting with hands occasionally. Maintained good eye contact throughout. Speech was at normal pace and volume. Affect appeared congruent with reported mood. No evidence of psychomotor agitation or retardation.
+
+**ASSESSMENT:**
+Client continues to experience symptoms consistent with Generalized Anxiety Disorder (F41.1). Shows good insight into triggers and has been implementing coping strategies. Progress noted in self-awareness and willingness to use therapeutic tools. Stress management skills need continued reinforcement.
+
+**PLAN:**
+1. Continue weekly CBT sessions focusing on anxiety management
+2. Practice progressive muscle relaxation daily
+3. Maintain sleep hygiene routine discussed in session
+4. Monitor anxiety levels using 1-10 scale daily
+5. Follow up in one week to assess progress with coping strategies</textarea>
+                                    <div class="note-actions">
+                                        <div class="note-actions-left">
+                                            <button class="btn secondary" onclick="exportToPDF(event)">
+                                                <i class="fas fa-download"></i> Export PDF
+                                            </button>
+                                            <button class="btn secondary" onclick="exportToEHR(event)">
+                                                <i class="fas fa-share"></i> Export to EHR
+                                            </button>
+                                        </div>
+                                        <div class="note-actions-right">
+                                            <button class="btn secondary" onclick="saveDraft(event)">Save Draft</button>
+                                            <button class="btn primary" onclick="finalizeNote(event)">Finalize Note</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="notes-content" id="birp-content">
+                                <div class="note-editor">
+                                    <div class="editor-toolbar">
+                                        <button class="toolbar-btn" onclick="regenerateNote('birp')">
+                                            <i class="fas fa-robot"></i> Regenerate
+                                        </button>
+                                        <button class="toolbar-btn" onclick="enhanceNote('birp')">
+                                            <i class="fas fa-magic"></i> Enhance
+                                        </button>
+                                        <button class="toolbar-btn" onclick="spellCheckNote('birp')">
+                                            <i class="fas fa-spell-check"></i> Spell Check
+                                        </button>
+                                    </div>
+                                    <textarea class="note-textarea" placeholder="BIRP format notes...">
+**BEHAVIOR:**
+Client arrived on time and appeared slightly anxious, evidenced by fidgeting and restless movements. Maintained appropriate eye contact and engaged actively in discussion. Demonstrated good insight when discussing current stressors and showed willingness to explore coping strategies.
+
+**INTERVENTION:**
+Utilized cognitive behavioral techniques to address anxiety-provoking thoughts related to work stress. Practiced deep breathing exercises for 5 minutes mid-session. Reviewed and reinforced previously learned progressive muscle relaxation technique. Explored connection between physical symptoms and emotional state.
+
+**RESPONSE:**
+Client responded well to breathing exercises, reporting feeling "calmer and more centered" afterward. Actively participated in cognitive restructuring exercises and identified 3 alternative thoughts to replace catastrophic thinking patterns. Demonstrated understanding of relaxation techniques.
+
+**PLAN:**
+Continue weekly sessions with focus on anxiety management. Client to practice deep breathing daily, particularly when experiencing work-related stress. Implement progressive muscle relaxation before bed to improve sleep quality. Schedule follow-up in one week to review progress.</textarea>
+                                    <div class="note-actions">
+                                        <div class="note-actions-left">
+                                            <button class="btn secondary" onclick="exportToPDF(event)">
+                                                <i class="fas fa-download"></i> Export PDF
+                                            </button>
+                                            <button class="btn secondary" onclick="exportToEHR(event)">
+                                                <i class="fas fa-share"></i> Export to EHR
+                                            </button>
+                                        </div>
+                                        <div class="note-actions-right">
+                                            <button class="btn secondary" onclick="saveDraft(event)">Save Draft</button>
+                                            <button class="btn primary" onclick="finalizeNote(event)">Finalize Note</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="notes-content" id="dap-content">
+                                <div class="note-editor">
+                                    <div class="editor-toolbar">
+                                        <button class="toolbar-btn" onclick="regenerateNote('dap')">
+                                            <i class="fas fa-robot"></i> Regenerate
+                                        </button>
+                                        <button class="toolbar-btn" onclick="enhanceNote('dap')">
+                                            <i class="fas fa-magic"></i> Enhance
+                                        </button>
+                                        <button class="toolbar-btn" onclick="spellCheckNote('dap')">
+                                            <i class="fas fa-spell-check"></i> Spell Check
+                                        </button>
+                                    </div>
+                                    <textarea class="note-textarea" placeholder="DAP format notes...">
+**DATA:**
+Client reports feeling "much more stable" since last session and rates mood as 7/10 (improved from 4/10 last week). Sleep patterns have normalized to 7-8 hours nightly with minimal interruptions. Reports successfully using mindfulness techniques during stressful work situations. Appeared calm and engaged throughout session, spoke at normal pace with appropriate affect.
+
+**ASSESSMENT:**
+Client demonstrates continued improvement in mood stability and anxiety management. Treatment goals are being met effectively with current therapeutic interventions. Shows excellent insight into triggers and proactive use of coping strategies learned in therapy. Progress noted in overall emotional regulation and stress response.
+
+**PLAN:**
+Continue current treatment approach with weekly CBT sessions. Client to maintain daily mindfulness practice and mood tracking journal. Review and practice additional stress management techniques for workplace situations. Schedule follow-up appointment in one week to monitor continued progress and adjust interventions as needed.</textarea>
+                                    <div class="note-actions">
+                                        <div class="note-actions-left">
+                                            <button class="btn secondary" onclick="exportToPDF(event)">
+                                                <i class="fas fa-download"></i> Export PDF
+                                            </button>
+                                            <button class="btn secondary" onclick="exportToEHR(event)">
+                                                <i class="fas fa-share"></i> Export to EHR
+                                            </button>
+                                        </div>
+                                        <div class="note-actions-right">
+                                            <button class="btn secondary" onclick="saveDraft(event)">Save Draft</button>
+                                            <button class="btn primary" onclick="finalizeNote(event)">Finalize Note</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="notes-content" id="girp-content">
+                                <div class="note-editor">
+                                    <div class="editor-toolbar">
+                                        <button class="toolbar-btn" onclick="regenerateNote('girp')">
+                                            <i class="fas fa-robot"></i> Regenerate
+                                        </button>
+                                        <button class="toolbar-btn" onclick="enhanceNote('girp')">
+                                            <i class="fas fa-magic"></i> Enhance
+                                        </button>
+                                        <button class="toolbar-btn" onclick="spellCheckNote('girp')">
+                                            <i class="fas fa-spell-check"></i> Spell Check
+                                        </button>
+                                    </div>
+                                    <textarea class="note-textarea" placeholder="GIRP format notes...">
+**GOAL:**
+Client will demonstrate mastery of at least 3 anxiety management techniques and utilize them effectively during high-stress situations, as measured by self-reported anxiety levels decreasing from 8/10 to 5/10 or below within the next month.
+
+**INTERVENTION:**
+Conducted psychoeducation on anxiety physiology and its impact on daily functioning. Taught and practiced progressive muscle relaxation technique for 10 minutes. Reviewed and reinforced cognitive restructuring methods previously learned. Assigned homework to practice techniques daily and complete anxiety monitoring log.
+
+**RESPONSE:**
+Client actively participated in learning new relaxation technique and demonstrated correct implementation during session. Successfully identified 3 negative thought patterns and generated alternative, more balanced thoughts. Expressed confidence in ability to practice techniques independently and showed 75% improvement in session anxiety levels after practicing PMR.
+
+**PLAN:**
+Continue weekly sessions focusing on anxiety management skill building. Client to practice PMR daily for 10 minutes and complete thought record when experiencing anxiety above 6/10. Review homework and progress toward goal achievement at next session. Consider introducing additional techniques if current interventions prove insufficient.</textarea>
+                                    <div class="note-actions">
+                                        <div class="note-actions-left">
+                                            <button class="btn secondary" onclick="exportToPDF(event)">
+                                                <i class="fas fa-download"></i> Export PDF
+                                            </button>
+                                            <button class="btn secondary" onclick="exportToEHR(event)">
+                                                <i class="fas fa-share"></i> Export to EHR
+                                            </button>
+                                        </div>
+                                        <div class="note-actions-right">
+                                            <button class="btn secondary" onclick="saveDraft(event)">Save Draft</button>
+                                            <button class="btn primary" onclick="finalizeNote(event)">Finalize Note</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="notes-content" id="freeform-content">
+                                <div class="note-editor">
+                                    <div class="editor-toolbar">
+                                        <button class="toolbar-btn" onclick="regenerateNote('freeform')">
+                                            <i class="fas fa-robot"></i> Regenerate
+                                        </button>
+                                        <button class="toolbar-btn" onclick="enhanceNote('freeform')">
+                                            <i class="fas fa-magic"></i> Enhance
+                                        </button>
+                                        <button class="toolbar-btn" onclick="spellCheckNote('freeform')">
+                                            <i class="fas fa-spell-check"></i> Spell Check
+                                        </button>
+                                    </div>
+                                    <textarea class="note-textarea" placeholder="Write your session notes in any format...">
+Session Date: ${new Date().toLocaleDateString()}
+Duration: 50 minutes
+
+Today's session focused on exploring the client's relationship patterns and how past experiences may be influencing current interpersonal difficulties. We began by reviewing the homework from last week, where the client tracked instances of conflict with their partner and identified triggers.
+
+Key themes that emerged:
+- Pattern of emotional withdrawal when feeling criticized
+- Difficulty expressing needs directly
+- Fear of abandonment stemming from early family dynamics
+
+The client showed good insight when we discussed how their childhood experiences of inconsistent caregiving may contribute to current attachment insecurities. They were able to connect past experiences to present behaviors and expressed motivation to develop healthier communication patterns.
+
+Interventions used:
+- Psychodynamic exploration of attachment patterns
+- Communication skills training
+- Mindfulness-based awareness exercises
+
+Client response:
+The client was engaged throughout the session and demonstrated willingness to examine difficult emotions. They expressed feeling "understood" and noted that our discussion helped clarify confusing feelings they've been experiencing in their relationship.
+
+Moving forward:
+We will continue to explore attachment themes while building practical communication skills. Next session will focus on developing assertiveness techniques and practicing expressing needs in a non-threatening way.
+
+Homework assigned:
+1. Daily mindfulness check-ins to notice emotional states
+2. Practice "I" statements when communicating with partner
+3. Journal about one positive interaction each day</textarea>
+                                    <div class="note-actions">
+                                        <div class="note-actions-left">
+                                            <button class="btn secondary" onclick="exportToPDF(event)">
+                                                <i class="fas fa-download"></i> Export PDF
+                                            </button>
+                                            <button class="btn secondary" onclick="exportToEHR(event)">
+                                                <i class="fas fa-share"></i> Export to EHR
+                                            </button>
+                                        </div>
+                                        <div class="note-actions-right">
+                                            <button class="btn secondary" onclick="saveDraft(event)">Save Draft</button>
+                                            <button class="btn primary" onclick="finalizeNote(event)">Finalize Note</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Clients View -->
+                <div class="dashboard-view" id="clients-view" style="display: none;">
+                    <div class="dashboard-card">
+                        <div class="card-body">
+                            <div style="margin-bottom: 24px;">
+                                <button class="btn primary" id="add-client-btn">
+                                    <i class="fas fa-plus"></i> Add New Client
+                                </button>
+                            </div>
+                            <div id="clients-list"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Analytics View -->
+                <div class="dashboard-view" id="analytics-view" style="display: none;">
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Analytics Dashboard</h3>
+                            <p class="card-subtitle">Track your practice performance and insights</p>
+                        </div>
+                        <div class="card-body">
+                            <div class="analytics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 32px;">
+                                <div class="analytics-card" style="background: var(--secondary-color); padding: 24px; border-radius: var(--border-radius); border: 1px solid var(--border-color);">
+                                    <h4 style="color: var(--primary-color); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                                        <i class="fas fa-chart-line"></i> Session Trends
+                                    </h4>
+                                    <div style="height: 200px; background: white; border-radius: 8px; padding: 16px;">
+                                        <canvas id="sessionsChart" width="400" height="200"></canvas>
+                                    </div>
+                                </div>
+                                
+                                <div class="analytics-card" style="background: var(--secondary-color); padding: 24px; border-radius: var(--border-radius); border: 1px solid var(--border-color);">
+                                    <h4 style="color: var(--primary-color); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                                        <i class="fas fa-users"></i> Client Activity
+                                    </h4>
+                                    <div style="height: 200px; background: white; border-radius: 8px; padding: 16px;">
+                                        <canvas id="clientActivityChart" width="400" height="200"></canvas>
+                                    </div>
+                                </div>
+                                
+                                <div class="analytics-card" style="background: var(--secondary-color); padding: 24px; border-radius: var(--border-radius); border: 1px solid var(--border-color);">
+                                    <h4 style="color: var(--primary-color); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                                        <i class="fas fa-clock"></i> Time Efficiency
+                                    </h4>
+                                    <div style="height: 200px; background: white; border-radius: 8px; padding: 16px;">
+                                        <canvas id="timeSavingsChart" width="400" height="200"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="analytics-summary" style="background: white; padding: 24px; border-radius: var(--border-radius); border: 1px solid var(--border-color);">
+                                <h4 style="color: var(--text-primary); margin-bottom: 16px;">Quick Insights</h4>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                                    <div style="text-align: center; padding: 16px; background: var(--secondary-color); border-radius: 8px;">
+                                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--success-color);">↗ 15%</div>
+                                        <div style="font-size: 0.875rem; color: var(--text-secondary);">Session completion rate</div>
+                                    </div>
+                                    <div style="text-align: center; padding: 16px; background: var(--secondary-color); border-radius: 8px;">
+                                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-color);">4.2h</div>
+                                        <div style="font-size: 0.875rem; color: var(--text-secondary);">Avg. time saved per week</div>
+                                    </div>
+                                    <div style="text-align: center; padding: 16px; background: var(--secondary-color); border-radius: 8px;">
+                                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--warning-color);">92%</div>
+                                        <div style="font-size: 0.875rem; color: var(--text-secondary);">Note accuracy rate</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Settings View -->
+                <div class="dashboard-view" id="settings-view" style="display: none;">
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Settings</h3>
+                            <p class="card-subtitle">Customize your application preferences</p>
+                        </div>
+                        <div class="card-body">
+                            <div class="settings-sections">
+                                <!-- Profile Settings -->
+                                <div class="settings-section" style="margin-bottom: 32px;">
+                                    <h4 style="color: var(--text-primary); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                                        <i class="fas fa-user"></i> Profile Information
+                                    </h4>
+                                    <div style="background: var(--secondary-color); padding: 24px; border-radius: 8px; border: 1px solid var(--border-color);">
+                                        <div class="settings-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                                            <div class="form-group">
+                                                <label>First Name</label>
+                                                <input type="text" value="Dr. Gisele" style="width: 100%; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Last Name</label>
+                                                <input type="text" value="Nzeukou" style="width: 100%; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Email</label>
+                                                <input type="email" value="demo@chaletnotes.com" style="width: 100%; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Professional Title</label>
+                                                <input type="text" value="Caregiver" style="width: 100%; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 6px;">
+                                            </div>
+                                        </div>
+                                        <div style="margin-top: 16px;">
+                                            <button class="btn primary">Save Profile Changes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Application Preferences -->
+                                <div class="settings-section" style="margin-bottom: 32px;">
+                                    <h4 style="color: var(--text-primary); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                                        <i class="fas fa-cog"></i> Application Preferences
+                                    </h4>
+                                    <div style="background: var(--secondary-color); padding: 24px; border-radius: 8px; border: 1px solid var(--border-color);">
+                                        <div class="preference-item" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border-color);">
+                                            <div>
+                                                <div style="font-weight: 500;">Auto-save notes</div>
+                                                <div style="font-size: 0.875rem; color: var(--text-secondary);">Automatically save progress notes every 30 seconds</div>
+                                            </div>
+                                            <input type="checkbox" checked style="transform: scale(1.2);">
+                                        </div>
+                                        <div class="preference-item" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border-color);">
+                                            <div>
+                                                <div style="font-weight: 500;">Recording quality</div>
+                                                <div style="font-size: 0.875rem; color: var(--text-secondary);">Higher quality improves transcription accuracy</div>
+                                            </div>
+                                            <select style="padding: 6px 10px; border: 1px solid var(--border-color); border-radius: 4px;">
+                                                <option>High</option>
+                                                <option>Medium</option>
+                                                <option>Low</option>
+                                            </select>
+                                        </div>
+                                        <div class="preference-item" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0;">
+                                            <div>
+                                                <div style="font-weight: 500;">Default note format</div>
+                                                <div style="font-size: 0.875rem; color: var(--text-secondary);">Choose your preferred note template</div>
+                                            </div>
+                                            <select style="padding: 6px 10px; border: 1px solid var(--border-color); border-radius: 4px;">
+                                                <option>SOAP</option>
+                                                <option>BIRP</option>
+                                                <option>DAP</option>
+                                                <option>GIRP</option>
+                                                <option>Freeform</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Security Settings -->
+                                <div class="settings-section">
+                                    <h4 style="color: var(--text-primary); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                                        <i class="fas fa-shield-alt"></i> Security & Privacy
+                                    </h4>
+                                    <div style="background: var(--secondary-color); padding: 24px; border-radius: 8px; border: 1px solid var(--border-color);">
+                                        <div class="form-group" style="margin-bottom: 16px;">
+                                            <label>Change Password</label>
+                                            <button class="btn secondary" style="margin-top: 8px;">Update Password</button>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Data Export</label>
+                                            <div style="margin-top: 8px; display: flex; gap: 12px;">
+                                                <button class="btn secondary">Export All Data</button>
+                                                <button class="btn secondary">Export Notes Only</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Add Client Modal -->
+        <div class="modal-overlay" id="client-modal-overlay" style="display: none;">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3>Add New Client</h3>
+                    <button class="modal-close" id="close-client-modal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="add-client-form">
+                        <div class="form-group">
+                            <label for="client-name">Client Name *</label>
+                            <input type="text" id="client-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="client-email">Email</label>
+                            <input type="email" id="client-email">
+                        </div>
+                        <div class="form-group">
+                            <label for="client-phone">Phone</label>
+                            <input type="tel" id="client-phone">
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn secondary" id="cancel-client">Cancel</button>
+                            <button type="submit" class="btn primary">Add Client</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up demo user data automatically
+            localStorage.setItem('authToken', 'demo-token-' + Date.now());
+            localStorage.setItem('userEmail', 'demo@chaletnotes.com');
+            const userData = {
+                firstName: 'Dr. Gisele',
+                lastName: 'Nzeukou',
+                email: 'demo@chaletnotes.com',
+                title: 'Caregiver'
+            };
+            localStorage.setItem('userData', JSON.stringify(userData));
+            
+            initializeDashboard();
+        });
+        
+        let recordingState = {
+            isRecording: false,
+            isPaused: false,
+            startTime: null,
+            pausedTime: 0,
+            timer: null,
+            mediaRecorder: null,
+            recognition: null,
+            transcript: ''
+        };
+        
+        function initializeDashboard() {
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            const userEmail = localStorage.getItem('userEmail');
+            
+            // Initialize sample data for demo
+            window.clientManager.initializeSampleData();
+            window.notesManager.initializeSampleData();
+            
+            // Update user info
+            if (userData.firstName && userData.lastName) {
+                document.getElementById('user-name').textContent = `${userData.firstName} ${userData.lastName}`;
+                document.getElementById('user-avatar').textContent = 
+                    (userData.firstName[0] + userData.lastName[0]).toUpperCase();
+            }
+            
+            // Setup navigation
+            setupNavigation();
+            setupRecording();
+            setupNotesTabs();
+            setupMobileMenu();
+            loadClients();
+            updateStats();
+            populateClientDropdown();
+            
+            // Initialize record button state
+            const recordBtn = document.getElementById('record-btn');
+            recordBtn.disabled = true;
+            recordBtn.style.opacity = '0.6';
+            recordBtn.title = 'Please select a client first';
+        }
+        
+        function setupNavigation() {
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const view = this.getAttribute('data-view');
+                    showView(view);
+                });
+            });
+        }
+        
+        function showView(viewName) {
+            // Update active nav item
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-view="${viewName}"]`).classList.add('active');
+            
+            // Update page title
+            const titles = {
+                dashboard: 'Dashboard',
+                record: 'Record Session',
+                notes: 'Progress Notes',
+                clients: 'Client Management',
+                analytics: 'Analytics',
+                settings: 'Settings'
+            };
+            document.getElementById('page-title').textContent = titles[viewName] || 'Dashboard';
+            
+            // Show/hide views with animations
+            document.querySelectorAll('.dashboard-view').forEach(view => {
+                if (view.style.display !== 'none') {
+                    view.style.opacity = '0';
+                    view.style.transform = 'translateX(-20px)';
+                    setTimeout(() => {
+                        view.style.display = 'none';
+                    }, 200);
+                }
+            });
+            
+            // Show target view with fade in effect
+            setTimeout(() => {
+                const targetView = document.getElementById(`${viewName}-view`);
+                if (targetView) {
+                    targetView.style.display = 'block';
+                    targetView.style.opacity = '0';
+                    targetView.style.transform = 'translateX(20px)';
+                    
+                    // Force a reflow
+                    targetView.offsetHeight;
+                    
+                    targetView.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                    targetView.style.opacity = '1';
+                    targetView.style.transform = 'translateX(0)';
+                    
+                    // Animate child elements
+                    animateViewElements(targetView, viewName);
+                }
+            }, 200);
+        }
+        
+        function animateViewElements(view, viewName) {
+            // Add staggered animations to cards and elements within the view
+            const cards = view.querySelectorAll('.dashboard-card, .stat-card, .note-card, .client-card');
+            const buttons = view.querySelectorAll('.btn, .control-btn');
+            const forms = view.querySelectorAll('.form-group, .form-section');
+            
+            // Animate cards
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(15px)';
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 80 + 100);
+            });
+            
+            // Animate buttons
+            buttons.forEach((button, index) => {
+                button.style.opacity = '0';
+                button.style.transform = 'scale(0.9)';
+                setTimeout(() => {
+                    button.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                    button.style.opacity = '1';
+                    button.style.transform = 'scale(1)';
+                }, index * 40 + 300);
+            });
+            
+            // Animate forms
+            forms.forEach((form, index) => {
+                form.style.opacity = '0';
+                form.style.transform = 'translateX(-10px)';
+                setTimeout(() => {
+                    form.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                    form.style.opacity = '1';
+                    form.style.transform = 'translateX(0)';
+                }, index * 60 + 200);
+            });
+            
+            // View-specific animations
+            if (viewName === 'dashboard') {
+                animateDashboardStats();
+            } else if (viewName === 'analytics') {
+                animateAnalyticsCharts();
+            }
+        }
+        
+        function animateDashboardStats() {
+            const statsNumbers = document.querySelectorAll('.stat-number');
+            statsNumbers.forEach((stat, index) => {
+                const finalValue = parseInt(stat.textContent) || 0;
+                if (finalValue === 0) return;
+                
+                let currentValue = 0;
+                const increment = finalValue / 30; // 30 steps for smooth animation
+                
+                const counter = setInterval(() => {
+                    currentValue += increment;
+                    if (currentValue >= finalValue) {
+                        currentValue = finalValue;
+                        clearInterval(counter);
+                    }
+                    stat.textContent = Math.floor(currentValue);
+                }, 30);
+            });
+        }
+        
+        function animateAnalyticsCharts() {
+            // Create the actual charts when analytics view is shown
+            createAnalyticsCharts();
+        }
+        
+        function createAnalyticsCharts() {
+            // Destroy existing charts if they exist
+            if (window.sessionsChart) window.sessionsChart.destroy();
+            if (window.clientActivityChart) window.clientActivityChart.destroy();
+            if (window.timeSavingsChart) window.timeSavingsChart.destroy();
+            
+            // Generate realistic sample data based on current date
+            const last30Days = generateLast30Days();
+            const sessionData = generateSessionData(last30Days);
+            const clientData = generateClientActivityData();
+            const timeSavingsData = generateTimeSavingsData(last30Days);
+            
+            // Sessions Trend Chart
+            const sessionsCtx = document.getElementById('sessionsChart');
+            if (sessionsCtx) {
+                window.sessionsChart = new Chart(sessionsCtx, {
+                    type: 'line',
+                    data: {
+                        labels: last30Days.map(date => date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
+                        datasets: [{
+                            label: 'Daily Sessions',
+                            data: sessionData,
+                            borderColor: '#4f46e5',
+                            backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointBackgroundColor: '#4f46e5',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            pointRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: Math.max(...sessionData) + 2,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    maxTicksLimit: 10
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Client Activity Chart
+            const clientCtx = document.getElementById('clientActivityChart');
+            if (clientCtx) {
+                window.clientActivityChart = new Chart(clientCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Active Clients', 'Inactive Clients', 'New This Month'],
+                        datasets: [{
+                            data: clientData,
+                            backgroundColor: [
+                                '#10b981',
+                                '#f59e0b',
+                                '#4f46e5'
+                            ],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    padding: 20,
+                                    usePointStyle: true
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Time Savings Chart
+            const timeSavingsCtx = document.getElementById('timeSavingsChart');
+            if (timeSavingsCtx) {
+                window.timeSavingsChart = new Chart(timeSavingsCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Documentation', 'Scheduling', 'Billing', 'Reports', 'Client Comm.'],
+                        datasets: [{
+                            label: 'Hours Saved per Week',
+                            data: timeSavingsData,
+                            backgroundColor: [
+                                '#4f46e5',
+                                '#10b981',
+                                '#f59e0b',
+                                '#ef4444',
+                                '#8b5cf6'
+                            ],
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return value + 'h';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        
+        function generateLast30Days() {
+            const days = [];
+            for (let i = 29; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                days.push(date);
+            }
+            return days;
+        }
+        
+        function generateSessionData(days) {
+            // Generate realistic session data with weekly patterns
+            return days.map((date, index) => {
+                const dayOfWeek = date.getDay();
+                // Weekend patterns (less sessions)
+                if (dayOfWeek === 0 || dayOfWeek === 6) {
+                    return Math.random() < 0.3 ? Math.floor(Math.random() * 2) : 0;
+                }
+                // Weekday patterns (more sessions)
+                const baseLoad = dayOfWeek === 1 || dayOfWeek === 5 ? 3 : 5; // Monday/Friday lighter
+                const variation = Math.floor(Math.random() * 4) - 1;
+                return Math.max(0, baseLoad + variation);
+            });
+        }
+        
+        function generateClientActivityData() {
+            // Generate realistic client distribution
+            const totalClients = window.clientManager ? window.clientManager.getAll().length : 18;
+            const activePercentage = 0.7 + Math.random() * 0.2; // 70-90% active
+            const newPercentage = 0.1 + Math.random() * 0.1; // 10-20% new
+            
+            const active = Math.floor(totalClients * activePercentage);
+            const newThisMonth = Math.floor(totalClients * newPercentage);
+            const inactive = totalClients - active - newThisMonth;
+            
+            return [active, inactive, newThisMonth];
+        }
+        
+        function generateTimeSavingsData(days) {
+            // Generate realistic time savings per category
+            return [
+                2.5 + Math.random() * 1.5, // Documentation: 2.5-4 hours
+                0.8 + Math.random() * 0.7, // Scheduling: 0.8-1.5 hours
+                1.2 + Math.random() * 0.8, // Billing: 1.2-2 hours
+                0.5 + Math.random() * 0.5, // Reports: 0.5-1 hour
+                0.3 + Math.random() * 0.4  // Client Communication: 0.3-0.7 hours
+            ];
+        }
+        
+        function setupRecording() {
+            const recordBtn = document.getElementById('record-btn');
+            const pauseBtn = document.getElementById('pause-btn');
+            const saveBtn = document.getElementById('save-btn');
+            const statusElement = document.getElementById('recording-status');
+            const timeElement = document.getElementById('recording-time');
+            const transcriptionArea = document.getElementById('transcription-area');
+            
+            recordBtn.addEventListener('click', async function() {
+                if (!recordingState.isRecording) {
+                    try {
+                        // Start both audio recording and speech recognition
+                        await startRecording();
+                        
+                    } catch (error) {
+                        alert('Failed to start recording: ' + error.message);
+                        console.error('Recording error:', error);
+                    }
+                } else {
+                    stopRecording();
+                }
+            });
+            
+            pauseBtn.addEventListener('click', function() {
+                if (recordingState.isRecording && !recordingState.isPaused) {
+                    pauseRecording();
+                } else if (recordingState.isRecording && recordingState.isPaused) {
+                    resumeRecording();
+                }
+            });
+            
+            saveBtn.addEventListener('click', function() {
+                if (recordingState.isRecording) {
+                    stopRecording();
+                }
+            });
+        }
+        
+        async function startRecording() {
+            try {
+                // Check if browser supports Speech Recognition
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if (!SpeechRecognition) {
+                    throw new Error('Speech recognition not supported in this browser. Please use Chrome, Edge, or Safari.');
+                }
+
+                // Start audio recording
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                recordingState.mediaRecorder = new MediaRecorder(stream);
+                recordingState.mediaRecorder.start();
+
+                // Set up speech recognition
+                recordingState.recognition = new SpeechRecognition();
+                recordingState.recognition.continuous = true;
+                recordingState.recognition.interimResults = true;
+                recordingState.recognition.lang = 'en-US';
+
+                const transcriptionArea = document.getElementById('transcription-area');
+                transcriptionArea.innerHTML = '';
+                recordingState.transcript = '';
+
+                recordingState.recognition.onresult = function(event) {
+                    let interimTranscript = '';
+                    let finalTranscript = recordingState.transcript;
+
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        const transcript = event.results[i][0].transcript;
+                        if (event.results[i].isFinal) {
+                            finalTranscript += transcript + ' ';
+                        } else {
+                            interimTranscript += transcript;
+                        }
+                    }
+
+                    recordingState.transcript = finalTranscript;
+                    transcriptionArea.innerHTML = 
+                        '<div style="color: var(--text-primary);">' + finalTranscript + '</div>' +
+                        '<div style="color: var(--text-secondary); font-style: italic;">' + interimTranscript + '</div>';
+                    
+                    transcriptionArea.scrollTop = transcriptionArea.scrollHeight;
+                };
+
+                recordingState.recognition.onerror = function(event) {
+                    console.error('Speech recognition error:', event.error);
+                    if (event.error === 'no-speech') {
+                        // This is normal - just means user isn't speaking
+                        return;
+                    }
+                    const transcriptionArea = document.getElementById('transcription-area');
+                    transcriptionArea.innerHTML += '<div style="color: var(--error-color); font-size: 0.875rem; margin-top: 10px;"><i class="fas fa-exclamation-triangle"></i> Speech recognition error: ' + event.error + '</div>';
+                };
+
+                recordingState.recognition.onend = function() {
+                    if (recordingState.isRecording) {
+                        // Restart recognition if we're still recording
+                        try {
+                            recordingState.recognition.start();
+                        } catch (e) {
+                            console.log('Recognition restart failed:', e);
+                        }
+                    }
+                };
+
+                // Start speech recognition
+                recordingState.recognition.start();
+
+                recordingState.isRecording = true;
+                recordingState.startTime = Date.now();
+                
+                const recordBtn = document.getElementById('record-btn');
+                const statusElement = document.getElementById('recording-status');
+                const pauseBtn = document.getElementById('pause-btn');
+                const saveBtn = document.getElementById('save-btn');
+                
+                recordBtn.classList.add('recording');
+                recordBtn.innerHTML = '<i class="fas fa-stop"></i>';
+                statusElement.textContent = 'Recording... (Speak now)';
+                pauseBtn.disabled = false;
+                saveBtn.disabled = false;
+                
+                // Start timer
+                recordingState.timer = setInterval(updateRecordingTime, 1000);
+
+                // Show initial message
+                transcriptionArea.innerHTML = '<div style="color: var(--text-secondary); font-style: italic; text-align: center; padding: 20px;">🎤 Listening... Start speaking to see live transcription</div>';
+
+            } catch (error) {
+                throw error;
+            }
+        }
+        
+        function stopRecording() {
+            recordingState.isRecording = false;
+            recordingState.isPaused = false;
+            recordingState.pausedTime = 0;
+            
+            // Stop speech recognition
+            if (recordingState.recognition) {
+                recordingState.recognition.stop();
+                recordingState.recognition = null;
+            }
+            
+            // Stop audio recording
+            if (recordingState.mediaRecorder) {
+                recordingState.mediaRecorder.stop();
+                recordingState.mediaRecorder.stream.getTracks().forEach(track => track.stop());
+            }
+            
+            const recordBtn = document.getElementById('record-btn');
+            const statusElement = document.getElementById('recording-status');
+            const pauseBtn = document.getElementById('pause-btn');
+            const saveBtn = document.getElementById('save-btn');
+            const transcriptionArea = document.getElementById('transcription-area');
+            
+            recordBtn.classList.remove('recording');
+            recordBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+            statusElement.textContent = 'Processing transcription...';
+            pauseBtn.disabled = true;
+            pauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+            
+            clearInterval(recordingState.timer);
+            
+            // Show final transcript
+            if (recordingState.transcript.trim()) {
+                transcriptionArea.innerHTML = 
+                    '<div style="color: var(--text-primary);">' + recordingState.transcript + '</div>' +
+                    '<div style="color: var(--success-color); font-size: 0.875rem; margin-top: 10px; text-align: center;"><i class="fas fa-check-circle"></i> Transcription completed</div>';
+            } else {
+                transcriptionArea.innerHTML = 
+                    '<div style="color: var(--text-secondary); text-align: center; padding: 20px;">No speech was detected during this recording session.</div>';
+            }
+            
+            // Simulate processing delay
+            setTimeout(() => {
+                statusElement.textContent = 'Recording Saved';
+                saveBtn.disabled = true;
+                
+                // Generate notes using the actual transcript
+                if (recordingState.transcript.trim()) {
+                    setTimeout(() => generateNotes(recordingState.transcript), 2000);
+                }
+            }, 1500);
+        }
+        
+        function updateRecordingTime() {
+            if (recordingState.startTime && !recordingState.isPaused) {
+                const elapsed = Math.floor((Date.now() - recordingState.startTime - recordingState.pausedTime) / 1000);
+                const minutes = Math.floor(elapsed / 60);
+                const seconds = elapsed % 60;
+                document.getElementById('recording-time').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }
+        
+        function pauseRecording() {
+            if (!recordingState.isRecording || recordingState.isPaused) return;
+            
+            recordingState.isPaused = true;
+            recordingState.pauseStartTime = Date.now();
+            
+            // Pause media recorder - note: MediaRecorder API doesn't have a pause method in all browsers
+            if (recordingState.mediaRecorder && recordingState.mediaRecorder.state === 'recording') {
+                if (typeof recordingState.mediaRecorder.pause === 'function') {
+                    recordingState.mediaRecorder.pause();
+                } else {
+                    // For browsers that don't support pause, we need to handle differently
+                    console.log('MediaRecorder pause not supported, continuing recording in background');
+                }
+            }
+            
+            // Pause speech recognition
+            if (recordingState.recognition) {
+                recordingState.recognition.stop();
+            }
+            
+            // Update UI with enhanced visual feedback
+            const pauseBtn = document.getElementById('pause-btn');
+            const statusElement = document.getElementById('recording-status');
+            const recordBtn = document.getElementById('record-btn');
+            const transcriptionArea = document.getElementById('transcription-area');
+            
+            pauseBtn.innerHTML = '<i class="fas fa-play"></i> Resume';
+            pauseBtn.style.backgroundColor = 'var(--success-color)';
+            pauseBtn.style.color = 'white';
+            statusElement.textContent = '⏸️ Recording Paused - Click Resume to continue';
+            recordBtn.style.opacity = '0.6';
+            
+            // Add pause indicator to transcription area
+            const pauseIndicator = document.createElement('div');
+            pauseIndicator.id = 'pause-indicator';
+            pauseIndicator.style.cssText = 'background: var(--warning-color); color: white; padding: 8px 12px; border-radius: 6px; text-align: center; margin: 10px 0; font-size: 0.875rem; font-weight: 600;';
+            pauseIndicator.innerHTML = '<i class="fas fa-pause"></i> Recording paused at ' + new Date().toLocaleTimeString();
+            transcriptionArea.appendChild(pauseIndicator);
+            
+            // Stop timer updates
+            clearInterval(recordingState.timer);
+            
+            // Show user feedback
+            showToolFeedback('Recording paused - speech recognition stopped', 'info');
+        }
+        
+        function resumeRecording() {
+            if (!recordingState.isRecording || !recordingState.isPaused) return;
+            
+            recordingState.isPaused = false;
+            recordingState.pausedTime += Date.now() - recordingState.pauseStartTime;
+            
+            try {
+                // Resume media recorder
+                if (recordingState.mediaRecorder && recordingState.mediaRecorder.state === 'paused') {
+                    recordingState.mediaRecorder.resume();
+                }
+                
+                // Restart speech recognition
+                if (recordingState.recognition) {
+                    recordingState.recognition.start();
+                }
+                
+                // Update UI
+                const pauseBtn = document.getElementById('pause-btn');
+                const statusElement = document.getElementById('recording-status');
+                
+                pauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+                statusElement.textContent = 'Recording... (Speak now)';
+                
+                // Resume timer
+                recordingState.timer = setInterval(updateRecordingTime, 1000);
+                
+            } catch (error) {
+                console.error('Error resuming recording:', error);
+            }
+        }
+        
+        function generateNotes(transcript) {
+            // Switch to notes view and show generated content
+            showView('notes');
+            
+            // In a real app, this would call an AI service
+            // For now, we'll use the actual transcript to create a basic note structure
+            if (transcript && transcript.trim()) {
+                const soapTextarea = document.querySelector('#soap-content .note-textarea');
+                if (soapTextarea) {
+                    soapTextarea.value = `**SUBJECTIVE:**
+Client reported: "${transcript.trim()}"
+
+**OBJECTIVE:**
+Client appeared engaged during session. Normal speech patterns and good eye contact maintained.
+
+**ASSESSMENT:**
+Based on client's verbal report and observed presentation during session. Further assessment needed.
+
+**PLAN:**
+Continue monitoring client progress. Schedule follow-up session to review goals and interventions.
+
+---
+Generated from session transcript on ${new Date().toLocaleDateString()}`;
+                }
+            }
+            
+            console.log('Notes generated from transcript');
+        }
+        
+        function setupNotesTabs() {
+            const tabButtons = document.querySelectorAll('.notes-tab');
+            const tabContents = document.querySelectorAll('.notes-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const format = this.getAttribute('data-format');
+                    
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    this.classList.add('active');
+                    const targetContent = document.getElementById(`${format}-content`);
+                    if (targetContent) {
+                        targetContent.classList.add('active');
+                    }
+                });
+            });
+        }
+        
+        function setupMobileMenu() {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const sidebar = document.getElementById('sidebar');
+            
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('open');
+                });
+            }
+        }
+        
+        function loadClients() {
+            const clientsList = document.getElementById('clients-list');
+            const clients = window.clientManager.getAll();
+            
+            if (!clientsList) return;
+            
+            if (clients.length === 0) {
+                clientsList.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                        <i class="fas fa-users" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                        <p>No clients added yet. Start by adding your first client.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            clientsList.innerHTML = clients.map(client => `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 12px;">
+                    <div>
+                        <h4 style="margin: 0 0 4px 0;">${client.name}</h4>
+                        <p style="margin: 0; color: var(--text-secondary); font-size: 0.875rem;">
+                            Added ${window.utils.formatDate(client.createdAt)}
+                        </p>
+                    </div>
+                    <div>
+                        <button class="btn secondary" style="margin-right: 8px;" onclick="editClient('${client.id}')">Edit</button>
+                        <button class="btn primary" onclick="viewClientSessions('${client.id}')">View Sessions</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function editClient(clientId) {
+            const client = window.clientManager.get(clientId);
+            if (!client) {
+                showToolFeedback('Client not found', 'error');
+                return;
+            }
+            
+            // Open client edit modal
+            document.getElementById('modal-title').textContent = 'Edit Client';
+            document.getElementById('save-client').textContent = 'Update Client';
+            
+            // Populate form fields
+            document.getElementById('client-id').value = client.id;
+            document.getElementById('client-name').value = client.name;
+            document.getElementById('client-email').value = client.email || '';
+            document.getElementById('client-phone').value = client.phone || '';
+            
+            document.getElementById('client-modal-overlay').style.display = 'flex';
+            document.getElementById('client-name').focus();
+            
+            showToolFeedback(`Editing client: ${client.name}`, 'info');
+        }
+        
+        function viewClientSessions(clientId) {
+            const client = window.clientManager.get(clientId);
+            if (!client) {
+                showToolFeedback('Client not found', 'error');
+                return;
+            }
+            
+            // Switch to analytics view and filter by this client
+            showView('analytics');
+            showToolFeedback(`Viewing sessions for ${client.name}`, 'success');
+            
+            // In a real app, this would filter the analytics to show only this client's data
+            setTimeout(() => {
+                showToolFeedback(`Loaded ${Math.floor(Math.random() * 10) + 1} sessions for ${client.name}`, 'info');
+            }, 1000);
+        }
+        
+        function updateStats() {
+            // In a real app, these would be fetched from the server
+            const stats = {
+                sessions: window.notesManager.getAll().length || 24,
+                notes: window.notesManager.getAll().length || 22,
+                clients: window.clientManager.getAll().length || 18,
+                timeSaved: '12h'
+            };
+            
+            if (document.getElementById('sessions-count')) {
+                document.getElementById('sessions-count').textContent = stats.sessions;
+                document.getElementById('notes-count').textContent = stats.notes;
+                document.getElementById('clients-count').textContent = stats.clients;
+                document.getElementById('time-saved').textContent = stats.timeSaved;
+            }
+        }
+        
+        function populateClientDropdown() {
+            const dropdown = document.getElementById('session-client');
+            const clients = window.clientManager.getAll();
+            
+            // Clear existing options
+            dropdown.innerHTML = '<option value="">Select a client...</option>';
+            
+            // Add client options
+            clients.forEach(client => {
+                const option = document.createElement('option');
+                option.value = client.id;
+                option.textContent = client.name;
+                dropdown.appendChild(option);
+            });
+        }
+        
+        // Handle client selection
+        document.addEventListener('change', function(e) {
+            if (e.target.id === 'session-client') {
+                const selectedClientId = e.target.value;
+                if (selectedClientId) {
+                    const selectedClient = window.clientManager.get(selectedClientId);
+                    if (selectedClient) {
+                        // Show feedback for selected client
+                        const statusElement = document.createElement('div');
+                        statusElement.innerHTML = `<div style="background: var(--primary-color); color: white; padding: 8px 12px; border-radius: 6px; position: fixed; top: 90px; right: 20px; z-index: 10000; box-shadow: var(--shadow-md); font-size: 0.875rem;"><i class="fas fa-user-check"></i> Selected: ${selectedClient.name}</div>`;
+                        document.body.appendChild(statusElement);
+                        setTimeout(() => statusElement.remove(), 2000);
+                        
+                        // Enable recording if client is selected
+                        const recordBtn = document.getElementById('record-btn');
+                        recordBtn.disabled = false;
+                        recordBtn.style.opacity = '1';
+                        recordBtn.title = 'Click to start recording';
+                    }
+                } else {
+                    // Disable recording if no client selected
+                    const recordBtn = document.getElementById('record-btn');
+                    recordBtn.disabled = true;
+                    recordBtn.style.opacity = '0.6';
+                    recordBtn.title = 'Please select a client first';
+                }
+            }
+        });
+        
+        // Modal functionality
+        function showClientModal() {
+            document.getElementById('client-modal-overlay').style.display = 'flex';
+            document.getElementById('client-name').focus();
+        }
+        
+        function hideClientModal() {
+            document.getElementById('client-modal-overlay').style.display = 'none';
+            document.getElementById('add-client-form').reset();
+        }
+        
+        // Add client functionality
+        document.addEventListener('click', function(e) {
+            if (e.target.id === 'add-client-btn' || e.target.id === 'add-new-client-btn') {
+                showClientModal();
+            }
+            
+            if (e.target.id === 'close-client-modal' || e.target.id === 'cancel-client') {
+                hideClientModal();
+            }
+        });
+        
+        // Handle form submission
+        document.getElementById('add-client-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const clientData = {
+                name: document.getElementById('client-name').value.trim(),
+                email: document.getElementById('client-email').value.trim(),
+                phone: document.getElementById('client-phone').value.trim()
+            };
+            
+            if (clientData.name) {
+                const newClient = window.clientManager.add(clientData);
+                loadClients();
+                updateStats();
+                populateClientDropdown();
+                hideClientModal();
+                
+                // Show success feedback
+                const statusElement = document.createElement('div');
+                statusElement.innerHTML = `<div style="background: var(--success-color); color: white; padding: 12px 16px; border-radius: 8px; position: fixed; top: 90px; right: 20px; z-index: 10000; box-shadow: var(--shadow-lg);"><i class="fas fa-check-circle"></i> Client "${clientData.name}" added successfully!</div>`;
+                document.body.appendChild(statusElement);
+                setTimeout(() => statusElement.remove(), 3000);
+            }
+        });
+        
+        // Close modal when clicking outside
+        document.getElementById('client-modal-overlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideClientModal();
+            }
+        });
+        
+        // AI Tool Functions
+        function showToolFeedback(message, type = 'success') {
+            const statusElement = document.createElement('div');
+            const bgColor = type === 'success' ? 'var(--success-color)' : type === 'error' ? 'var(--error-color)' : 'var(--primary-color)';
+            statusElement.innerHTML = `<div style="background: ${bgColor}; color: white; padding: 12px 16px; border-radius: 8px; position: fixed; top: 90px; right: 20px; z-index: 10000; box-shadow: var(--shadow-lg);"><i class="fas fa-robot"></i> ${message}</div>`;
+            document.body.appendChild(statusElement);
+            setTimeout(() => statusElement.remove(), 3000);
+        }
+        
+        function regenerateNote(format) {
+            const textarea = document.querySelector(`#${format}-content .note-textarea`);
+            const button = event.target.closest('.toolbar-btn');
+            if (!textarea) return;
+            
+            // Add loading state
+            button.classList.add('ai-loading');
+            button.disabled = true;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            
+            showToolFeedback('Regenerating note with AI...', 'info');
+            
+            // Simulate AI processing delay
+            setTimeout(() => {
+                const currentContent = textarea.value;
+                if (currentContent.trim()) {
+                    // Actually regenerate the content by rewriting it
+                    const regeneratedNote = regenerateNoteContent(currentContent, format);
+                    textarea.value = regeneratedNote;
+                    showToolFeedback('Note regenerated successfully!');
+                } else {
+                    showToolFeedback('Please add some content before regenerating.', 'error');
+                }
+                
+                // Remove loading state
+                button.classList.remove('ai-loading');
+                button.disabled = false;
+                button.innerHTML = originalText;
+            }, 2000);
+        }
+        
+        function enhanceNote(format) {
+            const textarea = document.querySelector(`#${format}-content .note-textarea`);
+            const button = event.target.closest('.toolbar-btn');
+            if (!textarea) return;
+            
+            // Add loading state
+            button.classList.add('ai-loading');
+            button.disabled = true;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enhancing...';
+            
+            showToolFeedback('Enhancing note with AI...', 'info');
+            
+            // Simulate AI processing delay
+            setTimeout(() => {
+                const currentContent = textarea.value;
+                if (currentContent.trim()) {
+                    // Actually enhance the content with clinical terminology
+                    const enhancedNote = enhanceNoteContent(currentContent);
+                    textarea.value = enhancedNote;
+                    showToolFeedback('Note enhanced successfully!');
+                } else {
+                    showToolFeedback('Please add some content before enhancing.', 'error');
+                }
+                
+                // Remove loading state
+                button.classList.remove('ai-loading');
+                button.disabled = false;
+                button.innerHTML = originalText;
+            }, 1500);
+        }
+        
+        function spellCheckNote(format) {
+            const textarea = document.querySelector(`#${format}-content .note-textarea`);
+            const button = event.target.closest('.toolbar-btn');
+            if (!textarea) return;
+            
+            // Add loading state
+            button.classList.add('ai-loading');
+            button.disabled = true;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
+            
+            showToolFeedback('Running spell check...', 'info');
+            
+            // Simulate spell check processing
+            setTimeout(() => {
+                const currentContent = textarea.value;
+                if (currentContent.trim()) {
+                    // Simple spell check simulation - in real app would use proper spell check API
+                    const commonMisspellings = {
+                        'thier': 'their',
+                        'recieve': 'receive',
+                        'seperate': 'separate',
+                        'occured': 'occurred',
+                        'neccessary': 'necessary'
+                    };
+                    
+                    let correctedContent = currentContent;
+                    let correctionCount = 0;
+                    
+                    for (const [wrong, correct] of Object.entries(commonMisspellings)) {
+                        const regex = new RegExp('\\b' + wrong + '\\b', 'gi');
+                        if (regex.test(correctedContent)) {
+                            correctedContent = correctedContent.replace(regex, correct);
+                            correctionCount++;
+                        }
+                    }
+                    
+                    textarea.value = correctedContent;
+                    
+                    if (correctionCount > 0) {
+                        showToolFeedback(`Spell check complete! Fixed ${correctionCount} error(s).`);
+                    } else {
+                        showToolFeedback('Spell check complete! No errors found.');
+                    }
+                } else {
+                    showToolFeedback('Please add some content before spell checking.', 'error');
+                }
+                
+                // Remove loading state
+                button.classList.remove('ai-loading');
+                button.disabled = false;
+                button.innerHTML = originalText;
+            }, 1000);
+        }
+        
+        // Note Management Functions
+        function saveDraft(event) {
+            const button = event.target.closest('button');
+            const noteContent = button.closest('.notes-content').querySelector('.note-textarea');
+            const format = button.closest('.notes-content').id.replace('-content', '');
+            
+            if (!noteContent || !noteContent.value.trim()) {
+                showToolFeedback('Please add some content before saving draft.', 'error');
+                return;
+            }
+            
+            // Show loading state
+            const originalText = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            
+            // Simulate save process
+            setTimeout(() => {
+                // Save to localStorage (in real app would save to server)
+                const draftData = {
+                    format: format,
+                    content: noteContent.value,
+                    savedAt: new Date().toISOString(),
+                    clientId: window.currentSession?.clientId || null
+                };
+                
+                localStorage.setItem(`draft_${format}_${Date.now()}`, JSON.stringify(draftData));
+                
+                // Reset button
+                button.disabled = false;
+                button.innerHTML = originalText;
+                
+                showToolFeedback(`${format.toUpperCase()} note saved as draft!`, 'success');
+            }, 1000);
+        }
+        
+        function finalizeNote(event) {
+            const button = event.target.closest('button');
+            const noteContent = button.closest('.notes-content').querySelector('.note-textarea');
+            const format = button.closest('.notes-content').id.replace('-content', '');
+            
+            if (!noteContent || !noteContent.value.trim()) {
+                showToolFeedback('Please add some content before finalizing.', 'error');
+                return;
+            }
+            
+            // Show loading state
+            const originalText = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Finalizing...';
+            
+            // Simulate finalization process
+            setTimeout(() => {
+                // Save finalized note (in real app would save to server/EHR)
+                const finalizedData = {
+                    format: format,
+                    content: noteContent.value,
+                    finalizedAt: new Date().toISOString(),
+                    clientId: window.currentSession?.clientId || null,
+                    status: 'finalized'
+                };
+                
+                localStorage.setItem(`finalized_${format}_${Date.now()}`, JSON.stringify(finalizedData));
+                
+                // Reset button
+                button.disabled = false;
+                button.innerHTML = originalText;
+                
+                // Mark as read-only
+                noteContent.style.backgroundColor = '#f8fafc';
+                noteContent.setAttribute('readonly', true);
+                
+                showToolFeedback(`${format.toUpperCase()} note finalized and locked!`, 'success');
+                
+                // In real app, might redirect to client summary or notes list
+                setTimeout(() => {
+                    showToolFeedback('Note added to client record', 'info');
+                }, 2000);
+            }, 1500);
+        }
+        
+        function exportToPDF(event) {
+            const button = event.target.closest('button');
+            const noteContent = button.closest('.notes-content').querySelector('.note-textarea');
+            const format = button.closest('.notes-content').id.replace('-content', '');
+            
+            if (!noteContent || !noteContent.value.trim()) {
+                showToolFeedback('Please add some content before exporting.', 'error');
+                return;
+            }
+            
+            // Show loading state
+            const originalText = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating PDF...';
+            
+            // Simulate PDF generation
+            setTimeout(() => {
+                // In a real app, this would call a PDF generation service
+                const pdfContent = noteContent.value;
+                const filename = `${format}_note_${new Date().toISOString().split('T')[0]}.pdf`;
+                
+                // Simulate PDF download
+                showToolFeedback('PDF generated successfully!', 'success');
+                
+                // Reset button
+                button.disabled = false;
+                button.innerHTML = originalText;
+                
+                // Simulate file download (in real app would trigger actual download)
+                setTimeout(() => {
+                    showToolFeedback(`Download started: ${filename}`, 'info');
+                }, 500);
+                
+            }, 2500);
+        }
+        
+        function exportToEHR(event) {
+            const button = event.target.closest('button');
+            const noteContent = button.closest('.notes-content').querySelector('.note-textarea');
+            const format = button.closest('.notes-content').id.replace('-content', '');
+            
+            if (!noteContent || !noteContent.value.trim()) {
+                showToolFeedback('Please add some content before exporting.', 'error');
+                return;
+            }
+            
+            // Show loading state
+            const originalText = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
+            
+            // Simulate EHR export
+            setTimeout(() => {
+                // In a real app, this would send to EHR system via API
+                const ehrData = {
+                    format: format,
+                    content: noteContent.value,
+                    exportedAt: new Date().toISOString(),
+                    clientId: window.currentSession?.clientId || null,
+                    ehrId: 'EHR-' + Math.random().toString(36).substr(2, 9).toUpperCase()
+                };
+                
+                // Reset button
+                button.disabled = false;
+                button.innerHTML = originalText;
+                
+                showToolFeedback(`Note exported to EHR successfully! ID: ${ehrData.ehrId}`, 'success');
+                
+                // Show integration confirmation
+                setTimeout(() => {
+                    showToolFeedback('Note synced with Electronic Health Record', 'info');
+                }, 1500);
+                
+            }, 2000);
+        }
+        
+        // AI Content Processing Functions
+        function regenerateNoteContent(content, format) {
+            // Simulate AI regeneration by rewriting the content with different phrasing
+            const templates = {
+                soap: {
+                    variations: [
+                        'Client reports experiencing',
+                        'Patient indicates feeling',
+                        'Individual describes',
+                        'Client expresses experiencing'
+                    ],
+                    replacements: {
+                        'Client reports': ['Patient indicates', 'Individual describes', 'Client expresses'],
+                        'appeared': ['seemed', 'presented as', 'demonstrated'],
+                        'calm': ['relaxed', 'composed', 'settled'],
+                        'anxious': ['worried', 'concerned', 'apprehensive'],
+                        'Continue': ['Maintain', 'Proceed with', 'Sustain'],
+                        'weekly': ['regular', 'ongoing', 'scheduled'],
+                        'sessions': ['appointments', 'meetings', 'consultations']
+                    }
+                },
+                birp: {
+                    replacements: {
+                        'demonstrated': ['exhibited', 'showed', 'displayed'],
+                        'techniques': ['strategies', 'methods', 'approaches'],
+                        'responded well': ['engaged positively', 'reacted favorably', 'participated actively'],
+                        'Continue': ['Proceed with', 'Maintain', 'Sustain']
+                    }
+                },
+                dap: {
+                    replacements: {
+                        'feeling': ['experiencing', 'reporting', 'describing'],
+                        'stable': ['consistent', 'steady', 'balanced'],
+                        'improvement': ['progress', 'advancement', 'enhancement'],
+                        'effectively': ['successfully', 'efficiently', 'productively']
+                    }
+                },
+                girp: {
+                    replacements: {
+                        'will demonstrate': ['will exhibit', 'will show', 'will display'],
+                        'techniques': ['strategies', 'methods', 'skills'],
+                        'participated': ['engaged', 'involved themselves', 'took part'],
+                        'Continue': ['Proceed with', 'Maintain', 'Keep up']
+                    }
+                }
+            };
+            
+            let regenerated = content;
+            const formatReplacements = templates[format] || templates.soap;
+            
+            // Apply word/phrase replacements
+            Object.entries(formatReplacements.replacements).forEach(([original, alternatives]) => {
+                const regex = new RegExp('\\b' + original + '\\b', 'gi');
+                if (regex.test(regenerated)) {
+                    const replacement = alternatives[Math.floor(Math.random() * alternatives.length)];
+                    regenerated = regenerated.replace(regex, replacement);
+                }
+            });
+            
+            // Add slight variations to sentence structure
+            regenerated = regenerated.replace(/\. ([A-Z])/g, function(match, letter) {
+                const variations = ['. ' + letter, '. Additionally, ' + letter.toLowerCase(), '. Furthermore, ' + letter.toLowerCase()];
+                return Math.random() > 0.7 ? variations[Math.floor(Math.random() * variations.length)] : match;
+            });
+            
+            return regenerated;
+        }
+        
+        function enhanceNoteContent(content) {
+            // Enhance content by improving clinical language and adding detail
+            const enhancements = {
+                // Replace simple words with more clinical terminology
+                'good': 'positive',
+                'bad': 'concerning',
+                'okay': 'adequate',
+                'better': 'improved',
+                'worse': 'deteriorated',
+                'happy': 'in good spirits',
+                'sad': 'experiencing low mood',
+                'mad': 'displaying irritability',
+                'stressed': 'experiencing elevated stress levels',
+                'tired': 'reporting fatigue',
+                'sleeping well': 'maintaining healthy sleep patterns',
+                'sleeping poorly': 'experiencing sleep disturbances',
+                'eating well': 'maintaining adequate nutrition',
+                'not eating': 'experiencing appetite changes'
+            };
+            
+            let enhanced = content;
+            
+            // Apply clinical terminology enhancements
+            Object.entries(enhancements).forEach(([simple, clinical]) => {
+                const regex = new RegExp('\\b' + simple + '\\b', 'gi');
+                enhanced = enhanced.replace(regex, clinical);
+            });
+            
+            // Add professional qualifiers
+            enhanced = enhanced.replace(/Client (says|reports|states)/gi, 'Client verbally reports');
+            enhanced = enhanced.replace(/Client is/gi, 'Client presents as');
+            enhanced = enhanced.replace(/will do/gi, 'will implement');
+            enhanced = enhanced.replace(/talked about/gi, 'discussed in detail');
+            
+            // Enhance therapeutic language
+            enhanced = enhanced.replace(/homework/gi, 'therapeutic assignments');
+            enhanced = enhanced.replace(/practice/gi, 'implement therapeutic exercises');
+            enhanced = enhanced.replace(/try to/gi, 'work towards');
+            
+            return enhanced;
+        }
+    </script>
+</body>
+</html>

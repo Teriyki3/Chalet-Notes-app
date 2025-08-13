@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Chalet Notes</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #e2e8f0 100%);
+            padding: 20px;
+        }
+        
+        .auth-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 480px;
+            overflow: hidden;
+        }
+        
+        .auth-header {
+            padding: 40px 40px 32px;
+            text-align: center;
+            background: white;
+        }
+        
+        .auth-logo {
+            color: var(--primary-color);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+        
+        .auth-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+        
+        .auth-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        
+        .auth-body {
+            padding: 0 40px 40px;
+        }
+        
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+        
+        .form-input {
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: var(--transition);
+            background: white;
+            color: var(--text-primary);
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+        
+        .form-input.error {
+            border-color: var(--error-color);
+        }
+        
+        .form-select {
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: var(--transition);
+            background: white;
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+        
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+        
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.875rem;
+            display: none;
+        }
+        
+        .password-strength {
+            margin-top: 8px;
+        }
+        
+        .strength-bar {
+            height: 4px;
+            background: #f3f4f6;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        
+        .strength-fill {
+            height: 100%;
+            width: 0%;
+            transition: var(--transition);
+            border-radius: 2px;
+        }
+        
+        .strength-weak .strength-fill {
+            width: 33%;
+            background: var(--error-color);
+        }
+        
+        .strength-medium .strength-fill {
+            width: 66%;
+            background: var(--warning-color);
+        }
+        
+        .strength-strong .strength-fill {
+            width: 100%;
+            background: var(--success-color);
+        }
+        
+        .strength-text {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .terms-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin: 8px 0;
+        }
+        
+        .checkbox-input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-color);
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+        
+        .terms-text {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        .terms-text a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .terms-text a:hover {
+            text-decoration: underline;
+        }
+        
+        .auth-submit {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 8px;
+        }
+        
+        .auth-submit:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+        
+        .auth-submit:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 24px 0;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+        }
+        
+        .divider span {
+            padding: 0 16px;
+        }
+        
+        .social-login {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: white;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        .social-btn:hover {
+            border-color: var(--primary-color);
+            background: var(--secondary-color);
+        }
+        
+        .social-btn i {
+            font-size: 18px;
+        }
+        
+        .google-btn i {
+            color: #4285f4;
+        }
+        
+        .microsoft-btn i {
+            color: #0078d4;
+        }
+        
+        .auth-footer {
+            text-align: center;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+        
+        .auth-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .trial-badge {
+            background: linear-gradient(135deg, var(--success-color), #059669);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 16px;
+        }
+        
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 10px;
+            }
+            
+            .auth-header,
+            .auth-body {
+                padding: 24px 24px;
+            }
+            
+            .auth-title {
+                font-size: 1.5rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-logo">Chalet Notes</div>
+                <div class="trial-badge">14-Day Free Trial</div>
+                <h1 class="auth-title">Create your account</h1>
+                <p class="auth-subtitle">Start streamlining your clinical documentation with AI-powered progress notes</p>
+            </div>
+            
+            <div class="auth-body">
+                <form class="auth-form" id="signup-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="firstName">First name</label>
+                            <input type="text" id="firstName" name="firstName" class="form-input" required placeholder="John">
+                            <div class="error-message"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="lastName">Last name</label>
+                            <input type="text" id="lastName" name="lastName" class="form-input" required placeholder="Doe">
+                            <div class="error-message"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email address</label>
+                        <input type="email" id="email" name="email" class="form-input" required placeholder="john@example.com">
+                        <div class="error-message"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="license">License type</label>
+                        <select id="license" name="license" class="form-select" required>
+                            <option value="">Select your license</option>
+                            <option value="lcsw">Licensed Clinical Social Worker (LCSW)</option>
+                            <option value="lmft">Licensed Marriage & Family Therapist (LMFT)</option>
+                            <option value="lpc">Licensed Professional Counselor (LPC)</option>
+                            <option value="psyd">Doctor of Psychology (PsyD)</option>
+                            <option value="phd">Doctor of Philosophy in Psychology (PhD)</option>
+                            <option value="md">Medical Doctor - Psychiatrist (MD)</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <div class="error-message"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="password">Password</label>
+                        <input type="password" id="password" name="password" class="form-input" required placeholder="Create a strong password">
+                        <div class="password-strength" id="password-strength">
+                            <div class="strength-bar">
+                                <div class="strength-fill"></div>
+                            </div>
+                            <div class="strength-text">Password strength: <span id="strength-text">Enter password</span></div>
+                        </div>
+                        <div class="error-message"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="confirmPassword">Confirm password</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" required placeholder="Confirm your password">
+                        <div class="error-message"></div>
+                    </div>
+                    
+                    <div class="terms-group">
+                        <input type="checkbox" id="terms" class="checkbox-input" required>
+                        <label for="terms" class="terms-text">
+                            I agree to Chalet Notes' <a href="#terms">Terms of Service</a> and <a href="#privacy">Privacy Policy</a>. I understand that Chalet Notes is HIPAA compliant and my data will be securely encrypted.
+                        </label>
+                    </div>
+                    
+                    <div class="terms-group">
+                        <input type="checkbox" id="marketing" class="checkbox-input">
+                        <label for="marketing" class="terms-text">
+                            I'd like to receive product updates and clinical documentation tips via email.
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="auth-submit">Create Account & Start Free Trial</button>
+                </form>
+                
+                <div class="divider">
+                    <span>Or sign up with</span>
+                </div>
+                
+                <div class="social-login">
+                    <a href="#" class="social-btn google-btn">
+                        <i class="fab fa-google"></i>
+                        Sign up with Google
+                    </a>
+                    <a href="#" class="social-btn microsoft-btn">
+                        <i class="fab fa-microsoft"></i>
+                        Sign up with Microsoft
+                    </a>
+                </div>
+                
+                <div class="auth-footer">
+                    Already have an account? <a href="login.html">Sign in</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('signup-form');
+            const passwordInput = document.getElementById('password');
+            const strengthContainer = document.getElementById('password-strength');
+            const strengthText = document.getElementById('strength-text');
+            
+            // Password strength checker
+            passwordInput.addEventListener('input', function() {
+                const password = this.value;
+                const strength = checkPasswordStrength(password);
+                
+                strengthContainer.className = 'password-strength strength-' + strength.level;
+                strengthText.textContent = strength.text;
+            });
+            
+            function checkPasswordStrength(password) {
+                if (!password) return { level: '', text: 'Enter password' };
+                
+                let score = 0;
+                const checks = [
+                    password.length >= 8,
+                    /[a-z]/.test(password),
+                    /[A-Z]/.test(password),
+                    /\d/.test(password),
+                    /[^a-zA-Z0-9]/.test(password)
+                ];
+                
+                score = checks.filter(Boolean).length;
+                
+                if (score < 3) return { level: 'weak', text: 'Weak' };
+                if (score < 5) return { level: 'medium', text: 'Medium' };
+                return { level: 'strong', text: 'Strong' };
+            }
+            
+            if (form) {
+                handleFormSubmit(form, async (formData) => {
+                    const submitBtn = form.querySelector('.auth-submit');
+                    const originalText = submitBtn.textContent;
+                    
+                    try {
+                        submitBtn.textContent = 'Creating account...';
+                        submitBtn.disabled = true;
+                        
+                        // Basic validation
+                        const password = formData.get('password');
+                        const confirmPassword = formData.get('confirmPassword');
+                        
+                        if (password !== confirmPassword) {
+                            throw new Error('Passwords do not match');
+                        }
+                        
+                        // Simulate account creation
+                        await new Promise(resolve => setTimeout(resolve, 2000));
+                        
+                        // Simulate successful signup
+                        const userData = {
+                            email: formData.get('email'),
+                            firstName: formData.get('firstName'),
+                            lastName: formData.get('lastName'),
+                            license: formData.get('license')
+                        };
+                        
+                        localStorage.setItem('authToken', 'demo-token-' + Date.now());
+                        localStorage.setItem('userEmail', userData.email);
+                        localStorage.setItem('userData', JSON.stringify(userData));
+                        
+                        // Redirect to dashboard
+                        window.location.href = 'dashboard.html';
+                        
+                    } catch (error) {
+                        console.error('Signup error:', error);
+                        alert(error.message || 'Signup failed. Please try again.');
+                        
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - Chalet Notes</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .analytics-page {
+            min-height: 100vh;
+            background: #f8fafc;
+            padding-top: 70px;
+        }
+        
+        .analytics-header {
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 32px 0;
+        }
+        
+        .analytics-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .date-selector {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .date-select {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: white;
+            font-size: 0.875rem;
+        }
+        
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+        }
+        
+        .analytics-body {
+            padding: 40px 0;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .metric-card {
+            background: white;
+            padding: 32px 24px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+        }
+        
+        .metric-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            margin: 0 auto 20px;
+        }
+        
+        .metric-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+        
+        .metric-change {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .metric-change.positive {
+            color: var(--success-color);
+        }
+        
+        .metric-change.negative {
+            color: var(--error-color);
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 32px;
+            margin-bottom: 40px;
+        }
+        
+        .chart-card {
+            background: white;
+            padding: 32px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .chart-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .chart-btn {
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            border: 1px solid var(--border-color);
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .chart-btn:hover {
+            background: var(--secondary-color);
+        }
+        
+        .chart-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .chart-placeholder {
+            height: 300px;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            border: 2px dashed var(--border-color);
+        }
+        
+        .chart-placeholder i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+        
+        .chart-placeholder h4 {
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+        
+        .insights-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+        }
+        
+        .insight-card {
+            background: white;
+            padding: 24px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+        }
+        
+        .insight-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .insight-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--secondary-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+        }
+        
+        .insight-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .insight-content {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .insight-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .insight-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .insight-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .insight-value {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .export-section {
+            background: white;
+            padding: 32px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            margin-top: 40px;
+            text-align: center;
+        }
+        
+        .export-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+        
+        .export-description {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+        
+        .export-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .export-btn {
+            padding: 12px 20px;
+            border: 1px solid var(--border-color);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+        
+        .export-btn:hover {
+            background: var(--secondary-color);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        @media (max-width: 1024px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .analytics-container {
+                padding: 0 16px;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-card {
+                padding: 20px;
+            }
+            
+            .export-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h2>Chalet Notes</h2>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="progress-notes.html" class="nav-link">Progress Notes</a>
+                <a href="organizations.html" class="nav-link">Organizations</a>
+                <a href="pricing.html" class="nav-link">Pricing</a>
+                <a href="blog.html" class="nav-link">Blog</a>
+                <a href="help.html" class="nav-link">Help</a>
+                <a href="reviews.html" class="nav-link">Reviews</a>
+                <a href="dashboard.html" class="nav-btn">Dashboard</a>
+                <a href="record-session.html" class="nav-btn primary">Record Session</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="analytics-page">
+        <header class="analytics-header">
+            <div class="analytics-container">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Analytics Dashboard</h1>
+                        <p class="page-subtitle">Track your practice performance and insights</p>
+                    </div>
+                    <div class="date-selector">
+                        <label for="date-range">Time Range:</label>
+                        <select id="date-range" class="date-select">
+                            <option value="7d">Last 7 days</option>
+                            <option value="30d" selected>Last 30 days</option>
+                            <option value="90d">Last 90 days</option>
+                            <option value="1y">Last year</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="analytics-body">
+            <div class="analytics-container">
+                <!-- Key Metrics -->
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="metric-number" id="sessions-metric">24</div>
+                        <div class="metric-label">Sessions This Month</div>
+                        <div class="metric-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>15% increase</span>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-file-medical"></i>
+                        </div>
+                        <div class="metric-number" id="notes-metric">22</div>
+                        <div class="metric-label">Notes Generated</div>
+                        <div class="metric-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>12% increase</span>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="metric-number" id="clients-metric">18</div>
+                        <div class="metric-label">Active Clients</div>
+                        <div class="metric-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>8% increase</span>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="metric-number">4.2h</div>
+                        <div class="metric-label">Time Saved Weekly</div>
+                        <div class="metric-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>22% increase</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">
+                                <i class="fas fa-chart-line"></i>
+                                Session Trends
+                            </h3>
+                            <div class="chart-actions">
+                                <button class="chart-btn active">Sessions</button>
+                                <button class="chart-btn">Notes</button>
+                                <button class="chart-btn">Time Saved</button>
+                            </div>
+                        </div>
+                        <div class="chart-placeholder">
+                            <i class="fas fa-chart-area"></i>
+                            <h4>Session Trends Chart</h4>
+                            <p>Interactive chart showing your session activity over time</p>
+                            <small>Chart visualization will be implemented with a charting library</small>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">
+                                <i class="fas fa-pie-chart"></i>
+                                Note Types Distribution
+                            </h3>
+                        </div>
+                        <div class="chart-placeholder">
+                            <i class="fas fa-chart-pie"></i>
+                            <h4>Note Types</h4>
+                            <p>Distribution of different note formats used</p>
+                            <div style="margin-top: 20px; text-align: left; font-size: 0.875rem;">
+                                <div style="margin-bottom: 8px;">• SOAP: 45%</div>
+                                <div style="margin-bottom: 8px;">• BIRP: 30%</div>
+                                <div style="margin-bottom: 8px;">• DAP: 15%</div>
+                                <div>• GIRP: 10%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Insights Section -->
+                <div class="insights-section">
+                    <div class="insight-card">
+                        <div class="insight-header">
+                            <div class="insight-icon">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <h4 class="insight-title">Key Insights</h4>
+                        </div>
+                        <div class="insight-content">
+                            <ul class="insight-list">
+                                <li>
+                                    <span>Peak session time</span>
+                                    <span class="insight-value">2:00 PM - 4:00 PM</span>
+                                </li>
+                                <li>
+                                    <span>Average session duration</span>
+                                    <span class="insight-value">52 minutes</span>
+                                </li>
+                                <li>
+                                    <span>Most productive day</span>
+                                    <span class="insight-value">Wednesday</span>
+                                </li>
+                                <li>
+                                    <span>Documentation efficiency</span>
+                                    <span class="insight-value">89%</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="insight-card">
+                        <div class="insight-header">
+                            <div class="insight-icon">
+                                <i class="fas fa-target"></i>
+                            </div>
+                            <h4 class="insight-title">Performance Metrics</h4>
+                        </div>
+                        <div class="insight-content">
+                            <ul class="insight-list">
+                                <li>
+                                    <span>Note completion rate</span>
+                                    <span class="insight-value">92%</span>
+                                </li>
+                                <li>
+                                    <span>AI accuracy rate</span>
+                                    <span class="insight-value">94.5%</span>
+                                </li>
+                                <li>
+                                    <span>Client satisfaction</span>
+                                    <span class="insight-value">4.8/5</span>
+                                </li>
+                                <li>
+                                    <span>Time savings vs manual</span>
+                                    <span class="insight-value">73%</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="insight-card">
+                        <div class="insight-header">
+                            <div class="insight-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <h4 class="insight-title">Recommendations</h4>
+                        </div>
+                        <div class="insight-content">
+                            <p>Based on your usage patterns, here are some suggestions:</p>
+                            <ul style="margin-top: 16px; padding-left: 16px;">
+                                <li style="margin-bottom: 8px;">Consider scheduling more sessions on Wednesdays when you're most productive</li>
+                                <li style="margin-bottom: 8px;">Your 2-4 PM time slot shows highest engagement rates</li>
+                                <li>SOAP notes seem to be your preferred format - consider creating templates</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export Section -->
+                <div class="export-section">
+                    <h3 class="export-title">Export Analytics Data</h3>
+                    <p class="export-description">Download your analytics data in various formats for further analysis or reporting</p>
+                    <div class="export-buttons">
+                        <button class="export-btn" onclick="exportData('pdf')">
+                            <i class="fas fa-file-pdf"></i>
+                            Export as PDF
+                        </button>
+                        <button class="export-btn" onclick="exportData('excel')">
+                            <i class="fas fa-file-excel"></i>
+                            Export to Excel
+                        </button>
+                        <button class="export-btn" onclick="exportData('csv')">
+                            <i class="fas fa-file-csv"></i>
+                            Export as CSV
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeAnalytics();
+            setupChartButtons();
+            setupDateRangeSelector();
+        });
+
+        function initializeAnalytics() {
+            // Simulate loading analytics data
+            updateMetrics();
+            
+            // Add loading animation to metric cards
+            const metricCards = document.querySelectorAll('.metric-card');
+            metricCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        }
+
+        function updateMetrics() {
+            // Simulate dynamic data updates
+            const metrics = {
+                sessions: Math.floor(Math.random() * 10) + 20,
+                notes: Math.floor(Math.random() * 8) + 18,
+                clients: Math.floor(Math.random() * 5) + 15
+            };
+            
+            document.getElementById('sessions-metric').textContent = metrics.sessions;
+            document.getElementById('notes-metric').textContent = metrics.notes;
+            document.getElementById('clients-metric').textContent = metrics.clients;
+        }
+
+        function setupChartButtons() {
+            const chartButtons = document.querySelectorAll('.chart-btn');
+            chartButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from siblings
+                    this.parentElement.querySelectorAll('.chart-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Simulate chart update
+                    const chartPlaceholder = this.closest('.chart-card').querySelector('.chart-placeholder');
+                    chartPlaceholder.style.opacity = '0.5';
+                    setTimeout(() => {
+                        chartPlaceholder.style.opacity = '1';
+                    }, 300);
+                });
+            });
+        }
+
+        function setupDateRangeSelector() {
+            const dateSelect = document.getElementById('date-range');
+            dateSelect.addEventListener('change', function() {
+                const selectedRange = this.value;
+                
+                // Show loading state
+                const metricNumbers = document.querySelectorAll('.metric-number');
+                metricNumbers.forEach(metric => {
+                    metric.style.opacity = '0.5';
+                });
+                
+                // Simulate data fetch delay
+                setTimeout(() => {
+                    updateMetrics();
+                    metricNumbers.forEach(metric => {
+                        metric.style.opacity = '1';
+                    });
+                    
+                    showFeedback(`Analytics updated for ${getDateRangeLabel(selectedRange)}`, 'success');
+                }, 800);
+            });
+        }
+
+        function getDateRangeLabel(range) {
+            const labels = {
+                '7d': 'last 7 days',
+                '30d': 'last 30 days',
+                '90d': 'last 90 days',
+                '1y': 'last year'
+            };
+            return labels[range] || 'selected period';
+        }
+
+        function exportData(format) {
+            // Simulate export process
+            showFeedback(`Preparing ${format.toUpperCase()} export...`, 'info');
+            
+            setTimeout(() => {
+                showFeedback(`Analytics data exported successfully as ${format.toUpperCase()}!`, 'success');
+            }, 2000);
+        }
+
+        function showFeedback(message, type = 'info') {
+            const feedback = document.createElement('div');
+            feedback.style.cssText = `
+                position: fixed;
+                top: 90px;
+                right: 20px;
+                padding: 12px 16px;
+                border-radius: 8px;
+                color: white;
+                font-weight: 500;
+                z-index: 10000;
+                box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+                animation: slideInRight 0.3s ease-out;
+                background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#4f46e5'};
+            `;
+            
+            feedback.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'}"></i> ${message}`;
+            
+            document.body.appendChild(feedback);
+            
+            setTimeout(() => {
+                feedback.remove();
+            }, 4000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Record Session - Chalet Notes</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .record-page {
+            min-height: 100vh;
+            background: #f8fafc;
+            padding-top: 70px;
+        }
+        
+        .record-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        
+        .record-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 32px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .card-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+        
+        .client-section {
+            margin-bottom: 32px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .client-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            transition: var(--transition);
+        }
+        
+        .client-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .add-client-btn {
+            width: 100%;
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: var(--secondary-color);
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .add-client-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            background: rgba(79, 70, 229, 0.05);
+        }
+        
+        .recording-section {
+            text-align: center;
+        }
+        
+        .record-button {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            color: white;
+            font-size: 32px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .record-button:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .record-button.recording {
+            background: var(--error-color);
+            animation: pulse 2s infinite;
+        }
+        
+        .record-button.recording::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 4px;
+            transform: translate(-50%, -50%);
+        }
+        
+        .record-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        
+        .recording-status {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+        
+        .recording-time {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            font-family: 'Courier New', monospace;
+            margin-bottom: 24px;
+        }
+        
+        .recording-controls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .control-btn {
+            padding: 12px 20px;
+            border: 1px solid var(--border-color);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .control-btn:hover {
+            background: var(--secondary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .control-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .pause-btn {
+            background: var(--warning-color);
+            color: white;
+            border-color: var(--warning-color);
+        }
+        
+        .pause-btn:hover {
+            background: #d97706;
+        }
+        
+        .resume-btn {
+            background: var(--success-color);
+            color: white;
+            border-color: var(--success-color);
+        }
+        
+        .resume-btn:hover {
+            background: #059669;
+        }
+        
+        .save-btn {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .save-btn:hover {
+            background: var(--primary-hover);
+        }
+        
+        .transcription-area {
+            background: #f8fafc;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            min-height: 300px;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            overflow-y: auto;
+        }
+        
+        .transcription-placeholder {
+            color: var(--text-secondary);
+            font-style: italic;
+            text-align: center;
+            padding: 60px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .transcription-placeholder i {
+            font-size: 48px;
+            opacity: 0.5;
+        }
+        
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+        
+        .modal {
+            background: white;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .modal-header {
+            padding: 24px 24px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .modal-header h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+        
+        .modal-close:hover {
+            background: var(--secondary-color);
+            color: var(--text-primary);
+        }
+        
+        .modal-body {
+            padding: 24px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+        
+        .feedback-message {
+            position: fixed;
+            top: 90px;
+            right: 20px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 10000;
+            box-shadow: var(--shadow-lg);
+            animation: slideInRight 0.3s ease-out;
+        }
+        
+        .feedback-success {
+            background: var(--success-color);
+        }
+        
+        .feedback-error {
+            background: var(--error-color);
+        }
+        
+        .feedback-info {
+            background: var(--primary-color);
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .record-container {
+                grid-template-columns: 1fr;
+                gap: 24px;
+                padding: 24px 16px;
+            }
+            
+            .record-card {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h2>Chalet Notes</h2>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="progress-notes.html" class="nav-link">Progress Notes</a>
+                <a href="organizations.html" class="nav-link">Organizations</a>
+                <a href="pricing.html" class="nav-link">Pricing</a>
+                <a href="blog.html" class="nav-link">Blog</a>
+                <a href="help.html" class="nav-link">Help</a>
+                <a href="reviews.html" class="nav-link">Reviews</a>
+                <a href="dashboard.html" class="nav-btn">Dashboard</a>
+                <a href="record-session.html" class="nav-btn primary">Record Session</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="record-page">
+        <div class="record-container">
+            <!-- Recording Controls -->
+            <div class="record-card">
+                <h2 class="card-title">Record Session</h2>
+                <p class="card-subtitle">Start recording your therapy session with live transcription</p>
+                
+                <div class="client-section">
+                    <div class="form-group">
+                        <label for="session-client">Select Client</label>
+                        <select class="client-select" id="session-client">
+                            <option value="">Select a client...</option>
+                        </select>
+                    </div>
+                    
+                    <button class="add-client-btn" id="add-new-client-btn">
+                        <i class="fas fa-plus"></i>
+                        Add New Client
+                    </button>
+                </div>
+                
+                <div class="recording-section">
+                    <button class="record-button" id="record-btn" disabled title="Please select a client first">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <div class="recording-status" id="recording-status">Select a client to begin</div>
+                    <div class="recording-time" id="recording-time">00:00</div>
+                    
+                    <div class="recording-controls">
+                        <button class="control-btn pause-btn" id="pause-btn" disabled>
+                            <i class="fas fa-pause"></i> Pause
+                        </button>
+                        <button class="control-btn save-btn" id="save-btn" disabled>
+                            <i class="fas fa-save"></i> Save & Process
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Live Transcription -->
+            <div class="record-card">
+                <h2 class="card-title">Live Transcription</h2>
+                <p class="card-subtitle">Real-time speech-to-text conversion</p>
+                
+                <div class="transcription-area" id="transcription-area">
+                    <div class="transcription-placeholder">
+                        <i class="fas fa-microphone-slash"></i>
+                        <p>Transcription will appear here when you start recording...</p>
+                        <small>Speak clearly for best results</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Add Client Modal -->
+    <div class="modal-overlay" id="client-modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Add New Client</h3>
+                <button class="modal-close" id="close-client-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="add-client-form">
+                    <div class="form-group">
+                        <label for="client-name">Client Name *</label>
+                        <input type="text" id="client-name" required placeholder="Enter client full name">
+                    </div>
+                    <div class="form-group">
+                        <label for="client-email">Email Address</label>
+                        <input type="email" id="client-email" placeholder="client@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="client-phone">Phone Number</label>
+                        <input type="tel" id="client-phone" placeholder="(555) 123-4567">
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn secondary" id="cancel-client">Cancel</button>
+                        <button type="submit" class="btn primary">Add Client</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        let recordingState = {
+            isRecording: false,
+            isPaused: false,
+            startTime: null,
+            pausedTime: 0,
+            timer: null,
+            mediaRecorder: null,
+            recognition: null,
+            transcript: '',
+            selectedClientId: null
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeRecordingPage();
+        });
+
+        function initializeRecordingPage() {
+            // Initialize client manager if available
+            if (window.clientManager) {
+                window.clientManager.initializeSampleData();
+                populateClientDropdown();
+            }
+            
+            setupRecordingControls();
+            setupClientModal();
+            setupClientSelection();
+        }
+
+        function populateClientDropdown() {
+            const dropdown = document.getElementById('session-client');
+            if (!window.clientManager) return;
+            
+            const clients = window.clientManager.getAll();
+            
+            // Clear existing options
+            dropdown.innerHTML = '<option value="">Select a client...</option>';
+            
+            // Add client options
+            clients.forEach(client => {
+                const option = document.createElement('option');
+                option.value = client.id;
+                option.textContent = client.name;
+                dropdown.appendChild(option);
+            });
+        }
+
+        function setupClientSelection() {
+            const dropdown = document.getElementById('session-client');
+            const recordBtn = document.getElementById('record-btn');
+            const statusElement = document.getElementById('recording-status');
+
+            dropdown.addEventListener('change', function() {
+                const selectedClientId = this.value;
+                recordingState.selectedClientId = selectedClientId;
+                
+                if (selectedClientId) {
+                    const client = window.clientManager ? window.clientManager.get(selectedClientId) : null;
+                    if (client) {
+                        recordBtn.disabled = false;
+                        recordBtn.style.opacity = '1';
+                        recordBtn.title = 'Click to start recording';
+                        statusElement.textContent = `Ready to record session for ${client.name}`;
+                        
+                        showFeedback(`Selected client: ${client.name}`, 'success');
+                    }
+                } else {
+                    recordBtn.disabled = true;
+                    recordBtn.style.opacity = '0.6';
+                    recordBtn.title = 'Please select a client first';
+                    statusElement.textContent = 'Select a client to begin';
+                }
+            });
+        }
+
+        function setupRecordingControls() {
+            const recordBtn = document.getElementById('record-btn');
+            const pauseBtn = document.getElementById('pause-btn');
+            const saveBtn = document.getElementById('save-btn');
+
+            recordBtn.addEventListener('click', async function() {
+                if (!recordingState.isRecording) {
+                    await startRecording();
+                } else {
+                    stopRecording();
+                }
+            });
+
+            pauseBtn.addEventListener('click', function() {
+                if (recordingState.isRecording && !recordingState.isPaused) {
+                    pauseRecording();
+                } else if (recordingState.isRecording && recordingState.isPaused) {
+                    resumeRecording();
+                }
+            });
+
+            saveBtn.addEventListener('click', function() {
+                if (recordingState.isRecording) {
+                    stopRecording();
+                }
+                // Redirect to notes page for processing
+                setTimeout(() => {
+                    window.location.href = 'progress-notes.html';
+                }, 2000);
+            });
+        }
+
+        async function startRecording() {
+            if (!recordingState.selectedClientId) {
+                showFeedback('Please select a client first', 'error');
+                return;
+            }
+
+            try {
+                // Check browser support
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if (!SpeechRecognition) {
+                    throw new Error('Speech recognition not supported. Please use Chrome, Edge, or Safari.');
+                }
+
+                // Start audio recording
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                recordingState.mediaRecorder = new MediaRecorder(stream);
+                recordingState.mediaRecorder.start();
+
+                // Set up speech recognition
+                recordingState.recognition = new SpeechRecognition();
+                recordingState.recognition.continuous = true;
+                recordingState.recognition.interimResults = true;
+                recordingState.recognition.lang = 'en-US';
+
+                const transcriptionArea = document.getElementById('transcription-area');
+                transcriptionArea.innerHTML = '<div style="color: var(--text-secondary); font-style: italic; text-align: center; padding: 40px;"><i class="fas fa-microphone" style="font-size: 24px; margin-bottom: 12px; color: var(--success-color);"></i><br>🎤 Listening... Start speaking to see live transcription</div>';
+                recordingState.transcript = '';
+
+                recordingState.recognition.onresult = function(event) {
+                    let interimTranscript = '';
+                    let finalTranscript = recordingState.transcript;
+
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        const transcript = event.results[i][0].transcript;
+                        if (event.results[i].isFinal) {
+                            finalTranscript += transcript + ' ';
+                        } else {
+                            interimTranscript += transcript;
+                        }
+                    }
+
+                    recordingState.transcript = finalTranscript;
+                    transcriptionArea.innerHTML = 
+                        '<div style="color: var(--text-primary); margin-bottom: 8px;">' + finalTranscript + '</div>' +
+                        '<div style="color: var(--text-secondary); font-style: italic; opacity: 0.7;">' + interimTranscript + '</div>';
+                    
+                    transcriptionArea.scrollTop = transcriptionArea.scrollHeight;
+                };
+
+                recordingState.recognition.onerror = function(event) {
+                    console.error('Speech recognition error:', event.error);
+                    if (event.error !== 'no-speech') {
+                        showFeedback('Speech recognition error: ' + event.error, 'error');
+                    }
+                };
+
+                recordingState.recognition.onend = function() {
+                    if (recordingState.isRecording && !recordingState.isPaused) {
+                        try {
+                            recordingState.recognition.start();
+                        } catch (e) {
+                            console.log('Recognition restart failed:', e);
+                        }
+                    }
+                };
+
+                recordingState.recognition.start();
+
+                recordingState.isRecording = true;
+                recordingState.startTime = Date.now();
+                
+                updateUI();
+                recordingState.timer = setInterval(updateRecordingTime, 1000);
+
+                showFeedback('Recording started successfully!', 'success');
+
+            } catch (error) {
+                showFeedback('Failed to start recording: ' + error.message, 'error');
+                console.error('Recording error:', error);
+            }
+        }
+
+        function pauseRecording() {
+            if (!recordingState.isRecording || recordingState.isPaused) return;
+            
+            recordingState.isPaused = true;
+            recordingState.pauseStartTime = Date.now();
+            
+            if (recordingState.recognition) {
+                recordingState.recognition.stop();
+            }
+            
+            if (recordingState.mediaRecorder && recordingState.mediaRecorder.state === 'recording') {
+                if (typeof recordingState.mediaRecorder.pause === 'function') {
+                    recordingState.mediaRecorder.pause();
+                }
+            }
+            
+            updateUI();
+            clearInterval(recordingState.timer);
+            
+            const transcriptionArea = document.getElementById('transcription-area');
+            const pauseIndicator = document.createElement('div');
+            pauseIndicator.id = 'pause-indicator';
+            pauseIndicator.style.cssText = 'background: var(--warning-color); color: white; padding: 12px; border-radius: 8px; text-align: center; margin: 16px 0; font-weight: 600;';
+            pauseIndicator.innerHTML = '<i class="fas fa-pause"></i> Recording paused at ' + new Date().toLocaleTimeString();
+            transcriptionArea.appendChild(pauseIndicator);
+            
+            showFeedback('Recording paused', 'info');
+        }
+
+        function resumeRecording() {
+            if (!recordingState.isRecording || !recordingState.isPaused) return;
+            
+            recordingState.isPaused = false;
+            recordingState.pausedTime += Date.now() - recordingState.pauseStartTime;
+            
+            try {
+                if (recordingState.mediaRecorder && recordingState.mediaRecorder.state === 'paused') {
+                    recordingState.mediaRecorder.resume();
+                }
+                
+                if (recordingState.recognition) {
+                    recordingState.recognition.start();
+                }
+                
+                const pauseIndicator = document.getElementById('pause-indicator');
+                if (pauseIndicator) {
+                    pauseIndicator.remove();
+                }
+                
+                updateUI();
+                recordingState.timer = setInterval(updateRecordingTime, 1000);
+                
+                showFeedback('Recording resumed', 'success');
+                
+            } catch (error) {
+                showFeedback('Error resuming recording: ' + error.message, 'error');
+            }
+        }
+
+        function stopRecording() {
+            recordingState.isRecording = false;
+            recordingState.isPaused = false;
+            
+            if (recordingState.recognition) {
+                recordingState.recognition.stop();
+                recordingState.recognition = null;
+            }
+            
+            if (recordingState.mediaRecorder) {
+                recordingState.mediaRecorder.stop();
+                recordingState.mediaRecorder.stream.getTracks().forEach(track => track.stop());
+            }
+            
+            updateUI();
+            clearInterval(recordingState.timer);
+            
+            const transcriptionArea = document.getElementById('transcription-area');
+            if (recordingState.transcript.trim()) {
+                transcriptionArea.innerHTML += 
+                    '<div style="color: var(--success-color); font-size: 0.875rem; margin-top: 16px; text-align: center; padding: 12px; background: #dcfce7; border-radius: 8px; font-weight: 600;"><i class="fas fa-check-circle"></i> Recording completed successfully!</div>';
+            }
+            
+            showFeedback('Recording saved! Processing session...', 'success');
+        }
+
+        function updateRecordingTime() {
+            if (recordingState.startTime && !recordingState.isPaused) {
+                const elapsed = Math.floor((Date.now() - recordingState.startTime - recordingState.pausedTime) / 1000);
+                const minutes = Math.floor(elapsed / 60);
+                const seconds = elapsed % 60;
+                document.getElementById('recording-time').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }
+
+        function updateUI() {
+            const recordBtn = document.getElementById('record-btn');
+            const pauseBtn = document.getElementById('pause-btn');
+            const saveBtn = document.getElementById('save-btn');
+            const statusElement = document.getElementById('recording-status');
+            
+            if (recordingState.isRecording) {
+                if (recordingState.isPaused) {
+                    recordBtn.innerHTML = '<i class="fas fa-stop"></i>';
+                    recordBtn.classList.add('recording');
+                    pauseBtn.innerHTML = '<i class="fas fa-play"></i> Resume';
+                    pauseBtn.classList.remove('pause-btn');
+                    pauseBtn.classList.add('resume-btn');
+                    statusElement.textContent = '⏸️ Recording Paused - Click Resume to continue';
+                } else {
+                    recordBtn.innerHTML = '<i class="fas fa-stop"></i>';
+                    recordBtn.classList.add('recording');
+                    pauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+                    pauseBtn.classList.add('pause-btn');
+                    pauseBtn.classList.remove('resume-btn');
+                    statusElement.textContent = '🎤 Recording in progress...';
+                }
+                pauseBtn.disabled = false;
+                saveBtn.disabled = false;
+            } else {
+                recordBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                recordBtn.classList.remove('recording');
+                pauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+                pauseBtn.classList.add('pause-btn');
+                pauseBtn.classList.remove('resume-btn');
+                pauseBtn.disabled = true;
+                saveBtn.disabled = true;
+                
+                if (recordingState.selectedClientId) {
+                    const client = window.clientManager ? window.clientManager.get(recordingState.selectedClientId) : null;
+                    statusElement.textContent = client ? `Ready to record session for ${client.name}` : 'Select a client to begin';
+                } else {
+                    statusElement.textContent = 'Select a client to begin';
+                }
+            }
+        }
+
+        function setupClientModal() {
+            const addClientBtn = document.getElementById('add-new-client-btn');
+            const modalOverlay = document.getElementById('client-modal-overlay');
+            const closeBtn = document.getElementById('close-client-modal');
+            const cancelBtn = document.getElementById('cancel-client');
+            const form = document.getElementById('add-client-form');
+
+            addClientBtn.addEventListener('click', () => {
+                modalOverlay.style.display = 'flex';
+                document.getElementById('client-name').focus();
+            });
+
+            [closeBtn, cancelBtn].forEach(btn => {
+                btn.addEventListener('click', () => {
+                    modalOverlay.style.display = 'none';
+                    form.reset();
+                });
+            });
+
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) {
+                    modalOverlay.style.display = 'none';
+                    form.reset();
+                }
+            });
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const clientData = {
+                    name: document.getElementById('client-name').value.trim(),
+                    email: document.getElementById('client-email').value.trim(),
+                    phone: document.getElementById('client-phone').value.trim()
+                };
+                
+                if (clientData.name) {
+                    if (window.clientManager) {
+                        const newClient = window.clientManager.add(clientData);
+                        populateClientDropdown();
+                        
+                        // Auto-select the new client
+                        document.getElementById('session-client').value = newClient.id;
+                        recordingState.selectedClientId = newClient.id;
+                        
+                        const recordBtn = document.getElementById('record-btn');
+                        recordBtn.disabled = false;
+                        recordBtn.style.opacity = '1';
+                        document.getElementById('recording-status').textContent = `Ready to record session for ${newClient.name}`;
+                        
+                        showFeedback(`Client "${clientData.name}" added successfully!`, 'success');
+                    }
+                    
+                    modalOverlay.style.display = 'none';
+                    form.reset();
+                }
+            });
+        }
+
+        function showFeedback(message, type = 'info') {
+            const feedback = document.createElement('div');
+            feedback.className = `feedback-message feedback-${type}`;
+            feedback.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'}"></i> ${message}`;
+            
+            document.body.appendChild(feedback);
+            
+            setTimeout(() => {
+                feedback.remove();
+            }, 4000);
+        }
+    </script>
+</body>
+</html>

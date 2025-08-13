@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviews - Chalet Notes</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .reviews-hero {
+            padding: 120px 0 60px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .reviews-hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        
+        .reviews-hero p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .reviews-stats {
+            padding: 80px 0;
+            background: white;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            text-align: center;
+        }
+        
+        .stat-item {
+            padding: 20px;
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .rating-overview {
+            padding: 80px 0;
+            background: var(--secondary-color);
+        }
+        
+        .rating-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 60px 40px;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .overall-rating {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 16px;
+        }
+        
+        .rating-stars {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .star {
+            font-size: 32px;
+            color: #fbbf24;
+        }
+        
+        .rating-text {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+            margin-bottom: 24px;
+        }
+        
+        .rating-breakdown {
+            margin-top: 40px;
+        }
+        
+        .breakdown-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .breakdown-label {
+            min-width: 60px;
+            text-align: right;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        .breakdown-bar {
+            flex: 1;
+            height: 8px;
+            background: #f3f4f6;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .breakdown-fill {
+            height: 100%;
+            background: #fbbf24;
+            border-radius: 4px;
+            transition: width 1s ease-in-out;
+        }
+        
+        .breakdown-count {
+            min-width: 40px;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        .reviews-grid {
+            padding: 80px 0;
+            background: white;
+        }
+        
+        .reviews-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 32px;
+        }
+        
+        .review-card {
+            background: white;
+            padding: 32px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        
+        .review-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .review-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .reviewer-avatar {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        
+        .reviewer-info {
+            flex: 1;
+        }
+        
+        .reviewer-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .reviewer-title {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 8px;
+        }
+        
+        .review-rating {
+            display: flex;
+            gap: 2px;
+        }
+        
+        .review-rating .star {
+            font-size: 16px;
+        }
+        
+        .review-content {
+            color: var(--text-primary);
+            line-height: 1.7;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        
+        .review-date {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        .featured-review {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            color: white;
+            padding: 48px;
+            border: none;
+        }
+        
+        .featured-review .reviewer-avatar {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .featured-review .reviewer-name,
+        .featured-review .review-content {
+            color: white;
+        }
+        
+        .featured-review .reviewer-title,
+        .featured-review .review-date {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .platforms-section {
+            padding: 80px 0;
+            background: var(--secondary-color);
+        }
+        
+        .platforms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 32px;
+            margin-top: 60px;
+        }
+        
+        .platform-card {
+            background: white;
+            padding: 40px 32px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        
+        .platform-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .platform-logo {
+            width: 60px;
+            height: 60px;
+            background: #f3f4f6;
+            border-radius: 12px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--text-secondary);
+        }
+        
+        .platform-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+        
+        .platform-rating {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .platform-score {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .platform-reviews {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        .cta-section {
+            padding: 80px 0;
+            background: white;
+            text-align: center;
+        }
+        
+        .cta-content h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+        
+        .cta-content p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .reviews-hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .reviews-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .featured-review {
+                grid-column: 1;
+            }
+            
+            .platforms-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-content h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h2>Chalet Notes</h2>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="progress-notes.html" class="nav-link">Progress Notes</a>
+                <a href="organizations.html" class="nav-link">Organizations</a>
+                <a href="pricing.html" class="nav-link">Pricing</a>
+                <a href="blog.html" class="nav-link">Blog</a>
+                <a href="help.html" class="nav-link">Help</a>
+                <a href="reviews.html" class="nav-link">Reviews</a>
+                <a href="login.html" class="nav-btn">Login</a>
+                <a href="signup.html" class="nav-btn primary">Get Started</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="reviews-hero">
+            <div class="container">
+                <h1>What Our Users Say</h1>
+                <p>Trusted by thousands of mental health professionals worldwide. See why they love Chalet Notes.</p>
+            </div>
+        </section>
+
+        <section class="reviews-stats">
+            <div class="container">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number">4.8</div>
+                        <div class="stat-label">Average Rating</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">2,847</div>
+                        <div class="stat-label">Reviews</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">96%</div>
+                        <div class="stat-label">Recommend Chalet Notes</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">15k+</div>
+                        <div class="stat-label">Active Users</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="rating-overview">
+            <div class="container">
+                <div class="rating-card">
+                    <div class="overall-rating">4.8</div>
+                    <div class="rating-stars">
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                    </div>
+                    <p class="rating-text">Based on 2,847 reviews from verified users</p>
+                    
+                    <div class="rating-breakdown">
+                        <div class="breakdown-item">
+                            <span class="breakdown-label">5 stars</span>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" style="width: 78%"></div>
+                            </div>
+                            <span class="breakdown-count">2,221</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span class="breakdown-label">4 stars</span>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" style="width: 16%"></div>
+                            </div>
+                            <span class="breakdown-count">456</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span class="breakdown-label">3 stars</span>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" style="width: 4%"></div>
+                            </div>
+                            <span class="breakdown-count">114</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span class="breakdown-label">2 stars</span>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" style="width: 1%"></div>
+                            </div>
+                            <span class="breakdown-count">28</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span class="breakdown-label">1 star</span>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" style="width: 1%"></div>
+                            </div>
+                            <span class="breakdown-count">28</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="reviews-grid">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Recent Reviews</h2>
+                    <p>See what our users are saying about Chalet Notes</p>
+                </div>
+                
+                <div class="reviews-container">
+                    <div class="review-card featured-review">
+                        <div class="review-header">
+                            <div class="reviewer-avatar">JM</div>
+                            <div class="reviewer-info">
+                                <div class="reviewer-name">Dr. Jennifer Martinez</div>
+                                <div class="reviewer-title">Licensed Clinical Psychologist</div>
+                                <div class="review-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="review-content">"Chalet Notes has completely transformed my practice. The AI-generated notes are incredibly accurate and save me hours each week. I can focus more on my clients instead of spending time on documentation. The HIPAA compliance and security features give me complete peace of mind. I recommend Chalet Notes to every mental health professional I know."</p>
+                        <div class="review-date">Verified purchase • 2 weeks ago</div>
+                    </div>
+
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-avatar">MS</div>
+                            <div class="reviewer-info">
+                                <div class="reviewer-name">Michael Smith, LCSW</div>
+                                <div class="reviewer-title">Clinical Social Worker</div>
+                                <div class="review-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="review-content">"The SOAP notes generated by Chalet Notes are better than what I used to write manually. The AI captures nuances and details I sometimes missed. Game changer for my practice efficiency."</p>
+                        <div class="review-date">Verified purchase • 1 week ago</div>
+                    </div>
+
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-avatar">SL</div>
+                            <div class="reviewer-info">
+                                <div class="reviewer-name">Sarah Lee, LMFT</div>
+                                <div class="reviewer-title">Marriage & Family Therapist</div>
+                                <div class="review-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="review-content">"I was skeptical about AI-generated notes, but Chalet Notes exceeded my expectations. The notes are professional, comprehensive, and perfectly formatted for billing. Customer support is exceptional too."</p>
+                        <div class="review-date">Verified purchase • 3 days ago</div>
+                    </div>
+
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-avatar">DW</div>
+                            <div class="reviewer-info">
+                                <div class="reviewer-name">Dr. David Wilson</div>
+                                <div class="reviewer-title">Psychiatrist</div>
+                                <div class="review-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="far fa-star star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="review-content">"Chalet Notes saves me about 2 hours per day on documentation. The transcription accuracy is impressive, and the different note formats meet all my clinical needs. Highly recommended."</p>
+                        <div class="review-date">Verified purchase • 5 days ago</div>
+                    </div>
+
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-avatar">AL</div>
+                            <div class="reviewer-info">
+                                <div class="reviewer-name">Amanda Lopez, LPC</div>
+                                <div class="reviewer-title">Licensed Professional Counselor</div>
+                                <div class="review-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="review-content">"The group practice features are fantastic. Managing multiple clinicians and maintaining consistency across our practice has never been easier. Worth every penny."</p>
+                        <div class="review-date">Verified purchase • 1 week ago</div>
+                    </div>
+
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-avatar">RC</div>
+                            <div class="reviewer-info">
+                                <div class="reviewer-name">Dr. Robert Chen</div>
+                                <div class="reviewer-title">Clinical Psychologist</div>
+                                <div class="review-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="review-content">"The mobile app is excellent for on-the-go documentation. I can record sessions during home visits and have notes ready before I'm back at the office."</p>
+                        <div class="review-date">Verified purchase • 4 days ago</div>
+                    </div>
+
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-avatar">KT</div>
+                            <div class="reviewer-info">
+                                <div class="reviewer-name">Kelly Thompson, LCSW</div>
+                                <div class="reviewer-title">Clinical Social Worker</div>
+                                <div class="review-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="far fa-star star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="review-content">"Great tool for streamlining documentation. The export features work seamlessly with our EHR system. Only minor issue is occasional transcription hiccups with heavy accents."</p>
+                        <div class="review-date">Verified purchase • 6 days ago</div>
+                    </div>
+
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-avatar">TH</div>
+                            <div class="reviewer-info">
+                                <div class="reviewer-name">Thomas Harris, PhD</div>
+                                <div class="reviewer-title">Licensed Psychologist</div>
+                                <div class="review-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="review-content">"Chalet Notes's analytics help me track my practice patterns and improve efficiency. The compliance monitoring features ensure I never miss important documentation requirements."</p>
+                        <div class="review-date">Verified purchase • 1 week ago</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="platforms-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Rated highly across platforms</h2>
+                    <p>See our ratings on popular review sites</p>
+                </div>
+                
+                <div class="platforms-grid">
+                    <div class="platform-card">
+                        <div class="platform-logo">
+                            <i class="fab fa-google"></i>
+                        </div>
+                        <div class="platform-name">Google Reviews</div>
+                        <div class="platform-rating">
+                            <div class="platform-score">4.7</div>
+                            <div class="rating-stars">
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                            </div>
+                        </div>
+                        <div class="platform-reviews">1,234 reviews</div>
+                    </div>
+                    
+                    <div class="platform-card">
+                        <div class="platform-logo">
+                            <i class="fab fa-yelp"></i>
+                        </div>
+                        <div class="platform-name">Yelp</div>
+                        <div class="platform-rating">
+                            <div class="platform-score">4.6</div>
+                            <div class="rating-stars">
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                            </div>
+                        </div>
+                        <div class="platform-reviews">567 reviews</div>
+                    </div>
+                    
+                    <div class="platform-card">
+                        <div class="platform-logo">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="platform-name">Trustpilot</div>
+                        <div class="platform-rating">
+                            <div class="platform-score">4.8</div>
+                            <div class="rating-stars">
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                            </div>
+                        </div>
+                        <div class="platform-reviews">892 reviews</div>
+                    </div>
+                    
+                    <div class="platform-card">
+                        <div class="platform-logo">
+                            <i class="fab fa-apple"></i>
+                        </div>
+                        <div class="platform-name">App Store</div>
+                        <div class="platform-rating">
+                            <div class="platform-score">4.9</div>
+                            <div class="rating-stars">
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                            </div>
+                        </div>
+                        <div class="platform-reviews">2,156 reviews</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-content">
+                    <h2>Join thousands of happy users</h2>
+                    <p>Start your free trial today and see why mental health professionals love Chalet Notes</p>
+                    <div class="hero-buttons">
+                        <a href="signup.html" class="btn primary">Start Free Trial</a>
+                        <a href="pricing.html" class="btn secondary">View Pricing</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Chalet Notes</h3>
+                    <p>AI-powered clinical documentation for mental health professionals.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="progress-notes.html">Progress Notes</a></li>
+                        <li><a href="organizations.html">Organizations</a></li>
+                        <li><a href="pricing.html">Pricing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="help.html">Help Center</a></li>
+                        <li><a href="reviews.html">Reviews</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#privacy">Privacy</a></li>
+                        <li><a href="#terms">Terms</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Chalet Notes. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

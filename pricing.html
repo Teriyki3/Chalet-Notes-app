@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - Chalet Notes</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .pricing-hero {
+            padding: 120px 0 60px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .pricing-hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        
+        .pricing-hero p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+        
+        .billing-toggle {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 32px;
+        }
+        
+        .toggle-label {
+            font-weight: 500;
+            opacity: 0.9;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .toggle-switch.active {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .toggle-knob {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+        
+        .toggle-switch.active .toggle-knob {
+            transform: translateX(30px);
+        }
+        
+        .savings-badge {
+            background: var(--success-color);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .pricing-main {
+            padding: 80px 0;
+            background: white;
+        }
+        
+        .pricing-grid-detailed {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 32px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .pricing-card-detailed {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 40px 32px;
+            border: 2px solid var(--border-color);
+            text-align: center;
+            position: relative;
+            transition: var(--transition);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .pricing-card-detailed:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .pricing-card-detailed.featured {
+            border-color: var(--primary-color);
+            transform: scale(1.05);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .pricing-card-detailed.featured:hover {
+            transform: scale(1.05) translateY(-4px);
+        }
+        
+        .plan-badge-detailed {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary-color);
+            color: white;
+            padding: 8px 24px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .plan-header-detailed {
+            margin-bottom: 32px;
+        }
+        
+        .plan-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+        
+        .plan-description {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+        
+        .plan-price-detailed {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+        
+        .price-large {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .price-period {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+        
+        .price-note {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 24px;
+        }
+        
+        .plan-features-detailed {
+            list-style: none;
+            margin-bottom: 32px;
+            text-align: left;
+        }
+        
+        .plan-features-detailed li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 0;
+            color: var(--text-primary);
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .plan-features-detailed li:last-child {
+            border-bottom: none;
+        }
+        
+        .plan-features-detailed i {
+            color: var(--success-color);
+            font-size: 16px;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+        
+        .feature-highlight {
+            background: #f0f9ff;
+            margin: 0 -12px;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        .comparison-section {
+            padding: 80px 0;
+            background: var(--secondary-color);
+        }
+        
+        .comparison-table {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        
+        .table-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 24px;
+            text-align: center;
+        }
+        
+        .table-header h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .comparison-row {
+            display: contents;
+        }
+        
+        .comparison-cell {
+            padding: 16px 24px;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .comparison-cell:last-child {
+            border-right: none;
+        }
+        
+        .feature-name {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .feature-value {
+            text-align: center;
+            justify-content: center;
+        }
+        
+        .check-icon {
+            color: var(--success-color);
+            font-size: 18px;
+        }
+        
+        .x-icon {
+            color: var(--error-color);
+            font-size: 18px;
+        }
+        
+        .faq-pricing {
+            padding: 80px 0;
+            background: white;
+        }
+        
+        .enterprise-cta {
+            padding: 80px 0;
+            background: linear-gradient(135deg, var(--text-primary) 0%, #374151 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .enterprise-cta h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        
+        .enterprise-cta p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            margin-bottom: 32px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .pricing-hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .pricing-grid-detailed {
+                grid-template-columns: 1fr;
+            }
+            
+            .pricing-card-detailed.featured {
+                transform: none;
+            }
+            
+            .comparison-grid {
+                grid-template-columns: 1fr;
+                gap: 1px;
+                background: var(--border-color);
+            }
+            
+            .comparison-cell {
+                background: white;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            
+            .enterprise-cta h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h2>Chalet Notes</h2>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="progress-notes.html" class="nav-link">Progress Notes</a>
+                <a href="organizations.html" class="nav-link">Organizations</a>
+                <a href="pricing.html" class="nav-link">Pricing</a>
+                <a href="blog.html" class="nav-link">Blog</a>
+                <a href="help.html" class="nav-link">Help</a>
+                <a href="reviews.html" class="nav-link">Reviews</a>
+                <a href="dashboard.html" class="nav-btn">Dashboard</a>
+                <a href="dashboard.html" class="nav-btn primary">Get Started</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="pricing-hero">
+            <div class="container">
+                <h1>Simple, Transparent Pricing</h1>
+                <p>Choose the perfect plan for your practice. All plans include our core AI-powered documentation features with no hidden fees.</p>
+                
+                <div class="billing-toggle">
+                    <span class="toggle-label">Monthly</span>
+                    <div class="toggle-switch" id="billing-toggle">
+                        <div class="toggle-knob"></div>
+                    </div>
+                    <span class="toggle-label">Annual</span>
+                    <span class="savings-badge">Save 20%</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="pricing-main">
+            <div class="container">
+                <div class="pricing-grid-detailed">
+                    <div class="pricing-card-detailed">
+                        <div class="plan-header-detailed">
+                            <div class="plan-name">Solo</div>
+                            <div class="plan-description">Perfect for individual practitioners just getting started</div>
+                            <div class="plan-price-detailed">
+                                <span class="price-large monthly-price">$49</span>
+                                <span class="price-large annual-price" style="display: none;">$39</span>
+                                <span class="price-period">/month</span>
+                            </div>
+                            <div class="price-note">14-day free trial • No setup fee</div>
+                        </div>
+                        
+                        <ul class="plan-features-detailed">
+                            <li><i class="fas fa-check"></i> Up to 50 sessions per month</li>
+                            <li><i class="fas fa-check"></i> AI transcription & note generation</li>
+                            <li><i class="fas fa-check"></i> All note formats (SOAP, BIRP, DAP, etc.)</li>
+                            <li><i class="fas fa-check"></i> Basic client management</li>
+                            <li><i class="fas fa-check"></i> Export to PDF, Word, EHR</li>
+                            <li><i class="fas fa-check"></i> Email support</li>
+                            <li><i class="fas fa-check"></i> HIPAA compliance</li>
+                            <li><i class="fas fa-check"></i> Mobile app access</li>
+                        </ul>
+                        
+                        <a href="dashboard.html" class="btn primary">Start Free Trial</a>
+                    </div>
+                    
+                    <div class="pricing-card-detailed featured">
+                        <div class="plan-badge-detailed">Most Popular</div>
+                        <div class="plan-header-detailed">
+                            <div class="plan-name">Professional</div>
+                            <div class="plan-description">Ideal for busy practitioners with higher session volumes</div>
+                            <div class="plan-price-detailed">
+                                <span class="price-large monthly-price">$99</span>
+                                <span class="price-large annual-price" style="display: none;">$79</span>
+                                <span class="price-period">/month</span>
+                            </div>
+                            <div class="price-note">14-day free trial • No setup fee</div>
+                        </div>
+                        
+                        <ul class="plan-features-detailed">
+                            <li><i class="fas fa-check"></i> <strong>Unlimited sessions</strong></li>
+                            <li><i class="fas fa-check"></i> Advanced AI features & customization</li>
+                            <li><i class="fas fa-check"></i> Custom note templates</li>
+                            <li><i class="fas fa-check"></i> Advanced client management</li>
+                            <li class="feature-highlight"><i class="fas fa-star"></i> Practice analytics & insights</li>
+                            <li><i class="fas fa-check"></i> Priority support (24/7 chat)</li>
+                            <li><i class="fas fa-check"></i> Bulk export capabilities</li>
+                            <li><i class="fas fa-check"></i> API access for integrations</li>
+                            <li><i class="fas fa-check"></i> Advanced security features</li>
+                        </ul>
+                        
+                        <a href="dashboard.html" class="btn primary">Start Free Trial</a>
+                    </div>
+                    
+                    <div class="pricing-card-detailed">
+                        <div class="plan-header-detailed">
+                            <div class="plan-name">Group Practice</div>
+                            <div class="plan-description">Comprehensive solution for multi-clinician practices</div>
+                            <div class="plan-price-detailed">
+                                <span class="price-large monthly-price">$69</span>
+                                <span class="price-large annual-price" style="display: none;">$55</span>
+                                <span class="price-period">/clinician/month</span>
+                            </div>
+                            <div class="price-note">3+ clinicians • 14-day free trial</div>
+                        </div>
+                        
+                        <ul class="plan-features-detailed">
+                            <li><i class="fas fa-check"></i> Everything in Professional</li>
+                            <li><i class="fas fa-check"></i> Multi-clinician management</li>
+                            <li><i class="fas fa-check"></i> Role-based permissions</li>
+                            <li class="feature-highlight"><i class="fas fa-star"></i> Centralized client database</li>
+                            <li><i class="fas fa-check"></i> Practice-wide analytics</li>
+                            <li><i class="fas fa-check"></i> Compliance monitoring</li>
+                            <li><i class="fas fa-check"></i> Team collaboration tools</li>
+                            <li><i class="fas fa-check"></i> Dedicated account manager</li>
+                            <li><i class="fas fa-check"></i> Custom training & onboarding</li>
+                        </ul>
+                        
+                        <a href="dashboard.html" class="btn primary">Start Free Trial</a>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 60px;">
+                    <div style="background: var(--secondary-color); padding: 32px; border-radius: var(--border-radius); max-width: 600px; margin: 0 auto;">
+                        <h3 style="margin-bottom: 16px; color: var(--text-primary);">Need something bigger?</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 24px;">Enterprise plans available for large practices, health systems, and organizations with 25+ clinicians.</p>
+                        <a href="#contact" class="btn secondary">Contact Sales</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="comparison-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Compare all features</h2>
+                    <p>See exactly what's included in each plan</p>
+                </div>
+                
+                <div class="comparison-table">
+                    <div class="table-header">
+                        <h3>Feature Comparison</h3>
+                    </div>
+                    
+                    <div class="comparison-grid">
+                        <div class="comparison-cell"><div class="feature-name">Feature</div></div>
+                        <div class="comparison-cell feature-value"><strong>Solo</strong></div>
+                        <div class="comparison-cell feature-value"><strong>Professional</strong></div>
+                        <div class="comparison-cell feature-value"><strong>Group Practice</strong></div>
+                    </div>
+                    
+                    <div class="comparison-row">
+                        <div class="comparison-cell"><div class="feature-name">Monthly Sessions</div></div>
+                        <div class="comparison-cell feature-value">50</div>
+                        <div class="comparison-cell feature-value">Unlimited</div>
+                        <div class="comparison-cell feature-value">Unlimited</div>
+                    </div>
+                    
+                    <div class="comparison-row">
+                        <div class="comparison-cell"><div class="feature-name">AI Transcription</div></div>
+                        <div class="comparison-cell feature-value"><i class="fas fa-check check-icon"></i></div>
+                        <div class="comparison-cell feature-value"><i class="fas fa-check check-icon"></i></div>
+                        <div class="comparison-cell feature-value"><i class="fas fa-check check-icon"></i></div>
+                    </div>
+                    
+                    <div class="comparison-row">
+                        <div class="comparison-cell"><div class="feature-name">Note Generation (All Formats)</div></div>
+                        <div class="comparison-cell feature-value"><i class="fas fa-check check-icon"></i></div>
+                        <div class="comparison-cell feature-value"><i class="fas fa-check check-icon"></i></div>
+                        <div class="comparison-cell feature-value"><i class="fas fa-check check-icon"></i></div>
+                    </div>
+                    
+                    <div class="comparison-row">
+                        <div class="comparison-cell"><div class="feature-name">Custom Templates</div></div>
+                        <div class="comparison-cell feature-value"><i class="fas fa-times x-icon"></i></div>
+                        <div class="comparison-cell feature-value"><i class="fas fa-check check-icon"></i></div>
+                        <div class="comparison-cell feature-value"><i class="fas fa-check check-icon"></i></div>
+                    </div>
+                    
+                    <div class="comparison-row">
+                        <div class="comparison-cell"><div class="feature-name">Practice Analytics</div></div>
+                        <div class="comparison-cell feature-value"><i class="fas fa-times x-icon"></i></div>
+                        <div class="comparison-cell feature-value"><i class="fas fa-check check-icon"></i></div>
+                        <div class="comparison-cell feature-value"><i class="fas fa-check check-icon"></i></div>
+                    </div>
+                    
+                    <div class="comparison-row">
+                        <div class="comparison-cell"><div class="feature-name">Multi-Clinician Management</div></div>
+                        <div class="comparison-cell feature-value"><i class="fas fa-times x-icon"></i></div>
+                        <div class="comparison-cell feature-value"><i class="fas fa-times x-icon"></i></div>
+                        <div class="comparison-cell feature-value"><i class="fas fa-check check-icon"></i></div>
+                    </div>
+                    
+                    <div class="comparison-row">
+                        <div class="comparison-cell"><div class="feature-name">API Access</div></div>
+                        <div class="comparison-cell feature-value"><i class="fas fa-times x-icon"></i></div>
+                        <div class="comparison-cell feature-value"><i class="fas fa-check check-icon"></i></div>
+                        <div class="comparison-cell feature-value"><i class="fas fa-check check-icon"></i></div>
+                    </div>
+                    
+                    <div class="comparison-row">
+                        <div class="comparison-cell"><div class="feature-name">Support Level</div></div>
+                        <div class="comparison-cell feature-value">Email</div>
+                        <div class="comparison-cell feature-value">Priority</div>
+                        <div class="comparison-cell feature-value">Dedicated</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="faq-pricing">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Pricing FAQ</h2>
+                </div>
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Is there a free trial available?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes! All plans come with a 14-day free trial with full access to all features. No credit card required to start your trial.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Can I change plans anytime?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Absolutely! You can upgrade or downgrade your plan at any time. Changes take effect at your next billing cycle, and we'll prorate any differences.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>What happens if I exceed my session limit?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>For Solo plan users, additional sessions are billed at $2 per session. We'll notify you before you reach your limit and offer to upgrade your plan for better value.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Do you offer discounts for annual billing?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes! Annual billing saves you 20% compared to monthly billing. You can switch between monthly and annual billing at any time.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Is there a setup fee or contract required?</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>No setup fees and no long-term contracts required. You can cancel anytime with no penalty. We believe in earning your business every month.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="enterprise-cta">
+            <div class="container">
+                <h2>Ready to get started?</h2>
+                <p>Join thousands of mental health professionals who trust Chalet Notes for their clinical documentation needs.</p>
+                <div class="hero-buttons">
+                    <a href="signup.html" class="btn primary">Start Your Free Trial</a>
+                    <a href="#contact" class="btn secondary">Contact Sales</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Chalet Notes</h3>
+                    <p>AI-powered clinical documentation for mental health professionals.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="progress-notes.html">Progress Notes</a></li>
+                        <li><a href="organizations.html">Organizations</a></li>
+                        <li><a href="pricing.html">Pricing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="help.html">Help Center</a></li>
+                        <li><a href="reviews.html">Reviews</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#privacy">Privacy</a></li>
+                        <li><a href="#terms">Terms</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Chalet Notes. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Billing toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggle = document.getElementById('billing-toggle');
+            const monthlyPrices = document.querySelectorAll('.monthly-price');
+            const annualPrices = document.querySelectorAll('.annual-price');
+            
+            toggle.addEventListener('click', function() {
+                this.classList.toggle('active');
+                const isAnnual = this.classList.contains('active');
+                
+                monthlyPrices.forEach(price => {
+                    price.style.display = isAnnual ? 'none' : 'inline';
+                });
+                
+                annualPrices.forEach(price => {
+                    price.style.display = isAnnual ? 'inline' : 'none';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

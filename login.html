@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Chalet Notes</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #e2e8f0 100%);
+            padding: 20px;
+        }
+        
+        .auth-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 420px;
+            overflow: hidden;
+        }
+        
+        .auth-header {
+            padding: 40px 40px 32px;
+            text-align: center;
+            background: white;
+        }
+        
+        .auth-logo {
+            color: var(--primary-color);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+        
+        .auth-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+        
+        .auth-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        
+        .auth-body {
+            padding: 0 40px 40px;
+        }
+        
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+        
+        .form-input {
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: var(--transition);
+            background: white;
+            color: var(--text-primary);
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+        
+        .form-input.error {
+            border-color: var(--error-color);
+        }
+        
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.875rem;
+            display: none;
+        }
+        
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 8px 0;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .checkbox-input {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary-color);
+        }
+        
+        .checkbox-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+        
+        .forgot-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        .forgot-link:hover {
+            color: var(--primary-hover);
+            text-decoration: underline;
+        }
+        
+        .auth-submit {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 8px;
+        }
+        
+        .auth-submit:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+        
+        .auth-submit:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 24px 0;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+        }
+        
+        .divider span {
+            padding: 0 16px;
+        }
+        
+        .social-login {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: white;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        .social-btn:hover {
+            border-color: var(--primary-color);
+            background: var(--secondary-color);
+        }
+        
+        .social-btn i {
+            font-size: 18px;
+        }
+        
+        .google-btn i {
+            color: #4285f4;
+        }
+        
+        .microsoft-btn i {
+            color: #0078d4;
+        }
+        
+        .auth-footer {
+            text-align: center;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+        
+        .auth-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .demo-credentials {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .demo-credentials h4 {
+            color: #92400e;
+            margin-bottom: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .demo-credentials p {
+            color: #92400e;
+            font-size: 0.875rem;
+            margin: 4px 0;
+        }
+        
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 10px;
+            }
+            
+            .auth-header,
+            .auth-body {
+                padding: 24px 24px;
+            }
+            
+            .auth-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-logo">Chalet Notes</div>
+                <h1 class="auth-title">Welcome back</h1>
+                <p class="auth-subtitle">Sign in to your account to continue your clinical documentation workflow</p>
+            </div>
+            
+            <div class="auth-body">
+                <div class="demo-credentials">
+                    <h4>Demo Credentials</h4>
+                    <p>Email: demo@chaletnotes.com</p>
+                    <p>Password: demo123</p>
+                </div>
+                
+                <form class="auth-form" id="login-form">
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email address</label>
+                        <input type="email" id="email" name="email" class="form-input" required placeholder="Enter your email">
+                        <div class="error-message"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="password">Password</label>
+                        <input type="password" id="password" name="password" class="form-input" required placeholder="Enter your password">
+                        <div class="error-message"></div>
+                    </div>
+                    
+                    <div class="form-options">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="remember" class="checkbox-input">
+                            <label for="remember" class="checkbox-label">Remember me</label>
+                        </div>
+                        <a href="#" class="forgot-link">Forgot password?</a>
+                    </div>
+                    
+                    <button type="submit" class="auth-submit">Sign In</button>
+                </form>
+                
+                <div class="divider">
+                    <span>Or continue with</span>
+                </div>
+                
+                <div class="social-login">
+                    <a href="#" class="social-btn google-btn">
+                        <i class="fab fa-google"></i>
+                        Sign in with Google
+                    </a>
+                    <a href="#" class="social-btn microsoft-btn">
+                        <i class="fab fa-microsoft"></i>
+                        Sign in with Microsoft
+                    </a>
+                </div>
+                
+                <div class="auth-footer">
+                    Don't have an account? <a href="signup.html">Sign up for free</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('login-form');
+            
+            if (form) {
+                handleFormSubmit(form, async (formData) => {
+                    const submitBtn = form.querySelector('.auth-submit');
+                    const originalText = submitBtn.textContent;
+                    
+                    try {
+                        submitBtn.textContent = 'Signing in...';
+                        submitBtn.disabled = true;
+                        
+                        const email = formData.get('email');
+                        const password = formData.get('password');
+                        
+                        // Use the auth helper from script.js
+                        await window.auth.login(email, password);
+                        
+                        // Redirect to dashboard on successful login
+                        window.location.href = 'dashboard.html';
+                        
+                    } catch (error) {
+                        console.error('Login error:', error);
+                        alert('Login failed. Please check your credentials and try again.');
+                        
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

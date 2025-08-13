@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Notes - Chalet Notes</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .progress-notes-hero {
+            padding: 120px 0 60px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .progress-notes-hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        
+        .progress-notes-hero p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .notes-tabs-section {
+            padding: 80px 0;
+            background: white;
+        }
+        
+        .tabs-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        .tabs-header {
+            display: flex;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 40px;
+            overflow-x: auto;
+        }
+        
+        .tab-button {
+            padding: 16px 24px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+        }
+        
+        .tab-button:hover {
+            color: var(--primary-color);
+        }
+        
+        .tab-button.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .note-type-card {
+            background: var(--secondary-color);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .note-type-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .note-type-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-color);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+        
+        .note-type-info h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+        
+        .note-type-info p {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+        }
+        
+        .note-structure {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 32px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+        }
+        
+        .structure-section {
+            margin-bottom: 32px;
+        }
+        
+        .structure-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+        
+        .example-text {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            font-style: italic;
+            color: var(--text-primary);
+            margin-top: 12px;
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            margin-top: 60px;
+        }
+        
+        .benefit-card {
+            background: white;
+            padding: 32px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+        
+        .benefit-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            margin: 0 auto 20px;
+        }
+        
+        .benefit-card h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+        
+        .benefit-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .cta-section {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            text-align: center;
+        }
+        
+        .cta-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .cta-content h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+        
+        .cta-content p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+        
+        .note-editor-container {
+            background: white;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            margin-bottom: 32px;
+        }
+        
+        .editor-toolbar {
+            background: var(--secondary-color);
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .toolbar-btn {
+            padding: 8px 16px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .toolbar-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .toolbar-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .note-textarea {
+            width: 100%;
+            min-height: 400px;
+            border: none;
+            padding: 24px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: vertical;
+            background: white;
+        }
+        
+        .note-textarea:focus {
+            outline: none;
+        }
+        
+        .note-actions {
+            padding: 16px 20px;
+            background: var(--secondary-color);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .note-actions-left,
+        .note-actions-right {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .feedback-message {
+            position: fixed;
+            top: 90px;
+            right: 20px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 10000;
+            box-shadow: var(--shadow-lg);
+            animation: slideInRight 0.3s ease-out;
+        }
+        
+        .feedback-success {
+            background: var(--success-color);
+        }
+        
+        .feedback-error {
+            background: var(--error-color);
+        }
+        
+        .feedback-info {
+            background: var(--primary-color);
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .ai-loading {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ai-loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @media (max-width: 768px) {
+            .progress-notes-hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .tabs-header {
+                justify-content: flex-start;
+            }
+            
+            .tab-button {
+                padding: 12px 16px;
+                font-size: 14px;
+            }
+            
+            .note-type-card {
+                padding: 24px;
+            }
+            
+            .note-structure {
+                padding: 24px;
+            }
+            
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .editor-toolbar {
+                padding: 12px 16px;
+                flex-wrap: wrap;
+            }
+            
+            .note-textarea {
+                padding: 16px;
+                min-height: 300px;
+            }
+            
+            .note-actions {
+                flex-direction: column;
+                gap: 12px;
+                align-items: stretch;
+            }
+            
+            .note-actions-left,
+            .note-actions-right {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h2>Chalet Notes</h2>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="progress-notes.html" class="nav-link">Progress Notes</a>
+                <a href="organizations.html" class="nav-link">Organizations</a>
+                <a href="pricing.html" class="nav-link">Pricing</a>
+                <a href="blog.html" class="nav-link">Blog</a>
+                <a href="help.html" class="nav-link">Help</a>
+                <a href="reviews.html" class="nav-link">Reviews</a>
+                <a href="dashboard.html" class="nav-btn">Dashboard</a>
+                <a href="dashboard.html" class="nav-btn primary">Get Started</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="progress-notes-hero">
+            <div class="container">
+                <h1>Professional Progress Notes</h1>
+                <p>Generate comprehensive, compliant progress notes in multiple formats with AI assistance. Choose from industry-standard templates or create custom formats.</p>
+            </div>
+        </section>
+
+        <section class="notes-tabs-section">
+            <div class="tabs-container">
+                <div class="tabs-header">
+                    <button class="tab-button active" data-tab="soap">SOAP Notes</button>
+                    <button class="tab-button" data-tab="birp">BIRP Notes</button>
+                    <button class="tab-button" data-tab="dap">DAP Notes</button>
+                    <button class="tab-button" data-tab="girp">GIRP Notes</button>
+                    <button class="tab-button" data-tab="emdr">EMDR Notes</button>
+                    <button class="tab-button" data-tab="freeform">Freeform Notes</button>
+                </div>
+
+                <!-- SOAP Notes Tab -->
+                <div class="tab-content active" id="soap">
+                    <div class="note-type-card">
+                        <div class="note-type-header">
+                            <div class="note-type-icon">
+                                <i class="fas fa-notes-medical"></i>
+                            </div>
+                            <div class="note-type-info">
+                                <h3>SOAP Notes</h3>
+                                <p>Subjective, Objective, Assessment, Plan - The most widely used clinical documentation format</p>
+                            </div>
+                        </div>
+                        
+                        <div class="note-structure">
+                            <div class="structure-section">
+                                <h4 class="section-title">
+                                    <i class="fas fa-comment-dots"></i>
+                                    Subjective
+                                </h4>
+                                <p class="section-description">
+                                    Patient's self-reported symptoms, concerns, and subjective experiences. Includes direct quotes and patient's perspective on their condition.
+                                </p>
+                                <div class="example-text">
+                                    "Client reports feeling 'anxious and overwhelmed' about upcoming work presentation. States sleep has been 'terrible' with frequent wake-ups."
+                                </div>
+                            </div>
+                            
+                            <div class="structure-section">
+                                <h4 class="section-title">
+                                    <i class="fas fa-eye"></i>
+                                    Objective
+                                </h4>
+                                <p class="section-description">
+                                    Observable, measurable data including vital signs, test results, and clinician observations during the session.
+                                </p>
+                                <div class="example-text">
+                                    "Client appeared fidgety, maintaining good eye contact. Speech was rapid at times. Affect congruent with stated mood. No evidence of psychosis."
+                                </div>
+                            </div>
+                            
+                            <div class="structure-section">
+                                <h4 class="section-title">
+                                    <i class="fas fa-search"></i>
+                                    Assessment
+                                </h4>
+                                <p class="section-description">
+                                    Clinical interpretation of subjective and objective data. Includes diagnosis, progress toward goals, and clinical judgment.
+                                </p>
+                                <div class="example-text">
+                                    "Client showing symptoms consistent with Generalized Anxiety Disorder. Progress noted in anxiety management techniques from previous sessions."
+                                </div>
+                            </div>
+                            
+                            <div class="structure-section">
+                                <h4 class="section-title">
+                                    <i class="fas fa-clipboard-list"></i>
+                                    Plan
+                                </h4>
+                                <p class="section-description">
+                                    Treatment interventions, medications, follow-up appointments, and specific action items for continued care.
+                                </p>
+                                <div class="example-text">
+                                    "Continue CBT techniques for anxiety management. Homework: practice deep breathing exercises daily. Schedule follow-up in 2 weeks."
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BIRP Notes Tab -->
+                <div class="tab-content" id="birp">
+                    <div class="note-type-card">
+                        <div class="note-type-header">
+                            <div class="note-type-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="note-type-info">
+                                <h3>BIRP Notes</h3>
+                                <p>Behavior, Intervention, Response, Plan - Focused on behavioral observations and interventions</p>
+                            </div>
+                        </div>
+                        
+                        <div class="note-structure">
+                            <div class="structure-section">
+                                <h4 class="section-title">
+                                    <i class="fas fa-user-check"></i>
+                                    Behavior
+                                </h4>
+                                <p class="section-description">
+                                    Observable behaviors, symptoms, and client presentation during the session. Focus on what you can see and measure.
+                                </p>
+                                <div class="example-text">
+                                    "Client arrived 10 minutes late, appeared disheveled. Maintained minimal eye contact, spoke in monotone voice throughout session."
+                                </div>
+                            </div>
+                            
+                            <div class="structure-section">
+                                <h4 class="section-title">
+                                    <i class="fas fa-tools"></i>
+                                    Intervention
+                                </h4>
+                                <p class="section-description">
+                                    Specific therapeutic techniques, interventions, or treatments provided during the session.
+                                </p>
+                                <div class="example-text">
+                                    "Used cognitive restructuring to address negative thought patterns. Practiced mindfulness breathing exercise for 5 minutes."
+                                </div>
+                            </div>
+                            
+                            <div class="structure-section">
+                                <h4 class="section-title">
+                                    <i class="fas fa-reply"></i>
+                                    Response
+                                </h4>
+                                <p class="section-description">
+                                    Client's response to the interventions provided. How did they react to the treatment?
+                                </p>
+                                <div class="example-text">
+                                    "Client engaged well with cognitive restructuring, identified 3 alternative thoughts. Reported feeling 'calmer' after breathing exercise."
+                                </div>
+                            </div>
+                            
+                            <div class="structure-section">
+                                <h4 class="section-title">
+                                    <i class="fas fa-route"></i>
+                                    Plan
+                                </h4>
+                                <p class="section-description">
+                                    Next steps, homework assignments, follow-up care, and treatment plan modifications.
+                                </p>
+                                <div class="example-text">
+                                    "Client to practice thought challenging worksheet daily. Continue with weekly sessions focusing on coping strategies."
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DAP Notes Tab -->
+                <div class="tab-content" id="dap">
+                    <div class="note-type-card">
+                        <div class="note-type-header">
+                            <div class="note-type-icon">
+                                <i class="fas fa-clipboard-check"></i>
+                            </div>
+                            <div class="note-type-info">
+                                <h3>DAP Notes</h3>
+                                <p>Data, Assessment, Plan - A streamlined approach focusing on essential clinical information</p>
+                            </div>
+                        </div>
+                        
+                        <div class="note-editor-container">
+                            <div class="editor-toolbar">
+                                <button class="toolbar-btn" onclick="regenerateNote('dap')">
+                                    <i class="fas fa-robot"></i> Regenerate
+                                </button>
+                                <button class="toolbar-btn" onclick="enhanceNote('dap')">
+                                    <i class="fas fa-magic"></i> Enhance
+                                </button>
+                                <button class="toolbar-btn" onclick="spellCheckNote('dap')">
+                                    <i class="fas fa-spell-check"></i> Spell Check
+                                </button>
+                            </div>
+                            <textarea class="note-textarea" id="dap-textarea" placeholder="Start writing your DAP notes here...">
+**DATA:**
+Client reports feeling "much more stable" since last session and rates mood as 7/10 (improved from 4/10 last week). Sleep patterns have normalized to 7-8 hours nightly with minimal interruptions. Reports successfully using mindfulness techniques during stressful work situations. Appeared calm and engaged throughout session, spoke at normal pace with appropriate affect.
+
+**ASSESSMENT:**
+Client demonstrates continued improvement in mood stability and anxiety management. Treatment goals are being met effectively with current therapeutic interventions. Shows excellent insight into triggers and proactive use of coping strategies learned in therapy. Progress noted in overall emotional regulation and stress response.
+
+**PLAN:**
+Continue current treatment approach with weekly CBT sessions. Client to maintain daily mindfulness practice and mood tracking journal. Review and practice additional stress management techniques for workplace situations. Schedule follow-up appointment in one week to monitor continued progress and adjust interventions as needed.
+                            </textarea>
+                            <div class="note-actions">
+                                <div class="note-actions-left">
+                                    <button class="btn secondary">
+                                        <i class="fas fa-download"></i> Export PDF
+                                    </button>
+                                    <button class="btn secondary">
+                                        <i class="fas fa-share"></i> Export to EHR
+                                    </button>
+                                </div>
+                                <div class="note-actions-right">
+                                    <button class="btn secondary">Save Draft</button>
+                                    <button class="btn primary">Finalize Note</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="note-structure" style="margin-top: 40px;">
+                            <h4 style="margin-bottom: 24px; color: var(--text-primary);">DAP Note Structure Guide</h4>
+                            <div class="structure-section">
+                                <h4 class="section-title">
+                                    <i class="fas fa-database"></i>
+                                    Data
+                                </h4>
+                                <p class="section-description">
+                                    Factual information including what the client said, observed behaviors, and objective measurements. Combines subjective and objective elements.
+                                </p>
+                            </div>
+                            
+                            <div class="structure-section">
+                                <h4 class="section-title">
+                                    <i class="fas fa-stethoscope"></i>
+                                    Assessment
+                                </h4>
+                                <p class="section-description">
+                                    Professional interpretation of the data, progress toward treatment goals, and clinical impressions.
+                                </p>
+                            </div>
+                            
+                            <div class="structure-section">
+                                <h4 class="section-title">
+                                    <i class="fas fa-map-marked-alt"></i>
+                                    Plan
+                                </h4>
+                                <p class="section-description">
+                                    Treatment plan moving forward, including interventions, homework, and follow-up care.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GIRP Notes Tab -->
+                <div class="tab-content" id="girp">
+                    <div class="note-type-card">
+                        <div class="note-type-header">
+                            <div class="note-type-icon">
+                                <i class="fas fa-bullseye"></i>
+                            </div>
+                            <div class="note-type-info">
+                                <h3>GIRP Notes</h3>
+                                <p>Goal, Intervention, Response, Plan - Goal-oriented documentation with clear progress tracking</p>
+                            </div>
+                        </div>
+                        
+                        <div class="note-editor-container">
+                            <div class="editor-toolbar">
+                                <button class="toolbar-btn" onclick="regenerateNote('girp')">
+                                    <i class="fas fa-robot"></i> Regenerate
+                                </button>
+                                <button class="toolbar-btn" onclick="enhanceNote('girp')">
+                                    <i class="fas fa-magic"></i> Enhance
+                                </button>
+                                <button class="toolbar-btn" onclick="spellCheckNote('girp')">
+                                    <i class="fas fa-spell-check"></i> Spell Check
+                                </button>
+                            </div>
+                            <textarea class="note-textarea" id="girp-textarea" placeholder="Start writing your GIRP notes here...">
+**GOAL:**
+Client will demonstrate mastery of at least 3 anxiety management techniques and utilize them effectively during high-stress situations, as measured by self-reported anxiety levels decreasing from 8/10 to 5/10 or below within the next month.
+
+**INTERVENTION:**
+Conducted psychoeducation on anxiety physiology and its impact on daily functioning. Taught and practiced progressive muscle relaxation technique for 10 minutes. Reviewed and reinforced cognitive restructuring methods previously learned. Assigned homework to practice techniques daily and complete anxiety monitoring log.
+
+**RESPONSE:**
+Client actively participated in learning new relaxation technique and demonstrated correct implementation during session. Successfully identified 3 negative thought patterns and generated alternative, more balanced thoughts. Expressed confidence in ability to practice techniques independently and showed 75% improvement in session anxiety levels after practicing PMR.
+
+**PLAN:**
+Continue weekly sessions focusing on anxiety management skill building. Client to practice PMR daily for 10 minutes and complete thought record when experiencing anxiety above 6/10. Review homework and progress toward goal achievement at next session. Consider introducing additional techniques if current interventions prove insufficient.
+                            </textarea>
+                            <div class="note-actions">
+                                <div class="note-actions-left">
+                                    <button class="btn secondary">
+                                        <i class="fas fa-download"></i> Export PDF
+                                    </button>
+                                    <button class="btn secondary">
+                                        <i class="fas fa-share"></i> Export to EHR
+                                    </button>
+                                </div>
+                                <div class="note-actions-right">
+                                    <button class="btn secondary">Save Draft</button>
+                                    <button class="btn primary">Finalize Note</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="note-structure" style="margin-top: 40px;">
+                            <h4 style="margin-bottom: 24px; color: var(--text-primary);">GIRP Note Structure Guide</h4>
+                            <div class="structure-section">
+                                <h4 class="section-title">
+                                    <i class="fas fa-flag-checkered"></i>
+                                    Goal
+                                </h4>
+                                <p class="section-description">
+                                    Specific treatment goals addressed in the session. Clear, measurable objectives being worked toward.
+                                </p>
+                            </div>
+                            
+                            <div class="structure-section">
+                                <h4 class="section-title">
+                                    <i class="fas fa-hand-holding-heart"></i>
+                                    Intervention
+                                </h4>
+                                <p class="section-description">
+                                    Therapeutic methods and techniques used to address the stated goals during the session.
+                                </p>
+                            </div>
+                            
+                            <div class="structure-section">
+                                <h4 class="section-title">
+                                    <i class="fas fa-chart-line"></i>
+                                    Response
+                                </h4>
+                                <p class="section-description">
+                                    Client's response to interventions and progress toward stated goals. Measurable outcomes when possible.
+                                </p>
+                            </div>
+                            
+                            <div class="structure-section">
+                                <h4 class="section-title">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    Plan
+                                </h4>
+                                <p class="section-description">
+                                    Future treatment direction, homework assignments, and modifications to treatment goals or approach.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EMDR Notes Tab -->
+                <div class="tab-content" id="emdr">
+                    <div class="note-type-card">
+                        <div class="note-type-header">
+                            <div class="note-type-icon">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <div class="note-type-info">
+                                <h3>EMDR Notes</h3>
+                                <p>Eye Movement Desensitization and Reprocessing - Specialized documentation for trauma therapy sessions</p>
+                            </div>
+                        </div>
+                        
+                        <div class="note-structure">
+                            <div class="structure-section">
+                                <h4 class="section-title">
+                                    <i class="fas fa-memory"></i>
+                                    Target Memory/Image
+                                </h4>
+                                <p class="section-description">
+                                    Description of the traumatic memory or disturbing image being processed in the session.
+                                </p>
+                                <div class="example-text">
+                                    "Target: Car accident from 6 months ago - image of moment of impact, feeling helpless."
+                                </div>
+                            </div>
+                            
+                            <div class="structure-section">
+                                <h4 class="section-title">
+                                    <i class="fas fa-thermometer-half"></i>
+                                    SUD/VOC Scores
+                                </h4>
+                                <p class="section-description">
+                                    Subjective Units of Disturbance and Validity of Cognition ratings before and after processing.
+                                </p>
+                                <div class="example-text">
+                                    "Initial SUD: 8/10, Final SUD: 3/10. Initial VOC: 2/7, Final VOC: 6/7 for positive cognition 'I am safe now.'"
+                                </div>
+                            </div>
+                            
+                            <div class="structure-section">
+                                <h4 class="section-title">
+                                    <i class="fas fa-sync-alt"></i>
+                                    Processing Notes
+                                </h4>
+                                <p class="section-description">
+                                    Description of bilateral stimulation used, client responses, and processing that occurred.
+                                </p>
+                                <div class="example-text">
+                                    "Used eye movements for bilateral stimulation. Client processed feelings of fear and helplessness. Observed abreaction in set 3, then gradual calming."
+                                </div>
+                            </div>
+                            
+                            <div class="structure-section">
+                                <h4 class="section-title">
+                                    <i class="fas fa-check-circle"></i>
+                                    Session Outcome
+                                </h4>
+                                <p class="section-description">
+                                    Results of the session, installation of positive cognition, and plans for follow-up processing.
+                                </p>
+                                <div class="example-text">
+                                    "Target successfully processed to SUD 0. Positive cognition installed. Client reports feeling 'lighter' and more in control. No adverse reactions."
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Freeform Notes Tab -->
+                <div class="tab-content" id="freeform">
+                    <div class="note-type-card">
+                        <div class="note-type-header">
+                            <div class="note-type-icon">
+                                <i class="fas fa-edit"></i>
+                            </div>
+                            <div class="note-type-info">
+                                <h3>Freeform Notes</h3>
+                                <p>Flexible narrative format - Create custom documentation that fits your unique practice needs</p>
+                            </div>
+                        </div>
+                        
+                        <div class="note-editor-container">
+                            <div class="editor-toolbar">
+                                <button class="toolbar-btn" onclick="regenerateNote('freeform')">
+                                    <i class="fas fa-robot"></i> Regenerate
+                                </button>
+                                <button class="toolbar-btn" onclick="enhanceNote('freeform')">
+                                    <i class="fas fa-magic"></i> Enhance
+                                </button>
+                                <button class="toolbar-btn" onclick="spellCheckNote('freeform')">
+                                    <i class="fas fa-spell-check"></i> Spell Check
+                                </button>
+                            </div>
+                            <textarea class="note-textarea" id="freeform-textarea" placeholder="Write your session notes in any format you prefer...">
+Session Date: ${new Date().toLocaleDateString()}
+Duration: 50 minutes
+Client: [Client Name]
+
+Today's session focused on exploring the client's relationship patterns and how past experiences may be influencing current interpersonal difficulties. We began by reviewing the homework from last week, where the client tracked instances of conflict with their partner and identified triggers.
+
+Key themes that emerged:
+- Pattern of emotional withdrawal when feeling criticized
+- Difficulty expressing needs directly
+- Fear of abandonment stemming from early family dynamics
+
+The client showed good insight when we discussed how their childhood experiences of inconsistent caregiving may contribute to current attachment insecurities. They were able to connect past experiences to present behaviors and expressed motivation to develop healthier communication patterns.
+
+Interventions used:
+- Psychodynamic exploration of attachment patterns
+- Communication skills training
+- Mindfulness-based awareness exercises
+
+Client response:
+The client was engaged throughout the session and demonstrated willingness to examine difficult emotions. They expressed feeling "understood" and noted that our discussion helped clarify confusing feelings they've been experiencing in their relationship.
+
+Moving forward:
+We will continue to explore attachment themes while building practical communication skills. Next session will focus on developing assertiveness techniques and practicing expressing needs in a non-threatening way.
+
+Homework assigned:
+1. Daily mindfulness check-ins to notice emotional states
+2. Practice "I" statements when communicating with partner
+3. Journal about one positive interaction each day
+
+Clinical impressions:
+Client demonstrates good insight and motivation for change. Progress noted in self-awareness and willingness to explore difficult topics. Continue current therapeutic approach with focus on attachment and communication patterns.
+                            </textarea>
+                            <div class="note-actions">
+                                <div class="note-actions-left">
+                                    <button class="btn secondary">
+                                        <i class="fas fa-download"></i> Export PDF
+                                    </button>
+                                    <button class="btn secondary">
+                                        <i class="fas fa-share"></i> Export to EHR
+                                    </button>
+                                </div>
+                                <div class="note-actions-right">
+                                    <button class="btn secondary">Save Draft</button>
+                                    <button class="btn primary">Finalize Note</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="note-structure" style="margin-top: 40px;">
+                            <h4 style="margin-bottom: 24px; color: var(--text-primary);">Freeform Note Flexibility</h4>
+                            <div class="structure-section">
+                                <h4 class="section-title">
+                                    <i class="fas fa-pen-fancy"></i>
+                                    Narrative Documentation
+                                </h4>
+                                <p class="section-description">
+                                    Write comprehensive session notes in your preferred style. Include all relevant clinical information without rigid structure constraints.
+                                </p>
+                            </div>
+                            
+                            <div class="structure-section">
+                                <h4 class="section-title">
+                                    <i class="fas fa-puzzle-piece"></i>
+                                    Custom Templates
+                                </h4>
+                                <p class="section-description">
+                                    Create and save your own note templates with specific sections and prompts that match your practice requirements.
+                                </p>
+                            </div>
+                            
+                            <div class="structure-section">
+                                <h4 class="section-title">
+                                    <i class="fas fa-layer-group"></i>
+                                    Multi-Format Support
+                                </h4>
+                                <p class="section-description">
+                                    Combine elements from different note types or create entirely new formats based on your clinical approach and documentation needs.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="benefits-grid">
+            <div class="container">
+                <div class="benefits-grid">
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h4>AI-Powered Generation</h4>
+                        <p>Advanced AI analyzes your session recordings and generates accurate, compliant notes in your chosen format automatically.</p>
+                    </div>
+                    
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="fas fa-shield-check"></i>
+                        </div>
+                        <h4>Compliance Assured</h4>
+                        <p>All note formats meet industry standards and regulatory requirements for clinical documentation and billing.</p>
+                    </div>
+                    
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h4>Time Saving</h4>
+                        <p>Reduce documentation time by up to 75% while maintaining high-quality, comprehensive progress notes.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-content">
+                    <h2>Ready to streamline your documentation?</h2>
+                    <p>Start creating professional progress notes with AI assistance today</p>
+                    <div class="hero-buttons">
+                        <a href="dashboard.html" class="btn primary">View Dashboard</a>
+                        <a href="dashboard.html" class="btn secondary">Start Recording</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Chalet Notes</h3>
+                    <p>AI-powered clinical documentation for mental health professionals.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="progress-notes.html">Progress Notes</a></li>
+                        <li><a href="organizations.html">Organizations</a></li>
+                        <li><a href="pricing.html">Pricing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="help.html">Help Center</a></li>
+                        <li><a href="reviews.html">Reviews</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#privacy">Privacy</a></li>
+                        <li><a href="#terms">Terms</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Chalet Notes. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Tab switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+                    
+                    // Remove active class from all buttons and contents
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Add active class to clicked button and corresponding content
+                    this.classList.add('active');
+                    document.getElementById(targetTab).classList.add('active');
+                });
+            });
+        });
+
+        // AI Tool Functions
+        function showToolFeedback(message, type = 'success') {
+            const feedback = document.createElement('div');
+            feedback.className = `feedback-message feedback-${type}`;
+            feedback.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'}"></i> ${message}`;
+            
+            document.body.appendChild(feedback);
+            
+            setTimeout(() => {
+                feedback.remove();
+            }, 4000);
+        }
+        
+        function regenerateNote(format) {
+            const textarea = document.getElementById(`${format}-textarea`);
+            const button = event.target.closest('.toolbar-btn');
+            if (!textarea) return;
+            
+            // Add loading state
+            button.classList.add('ai-loading');
+            button.disabled = true;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Regenerating...';
+            
+            showToolFeedback('AI is regenerating your note...', 'info');
+            
+            // Simulate AI processing delay
+            setTimeout(() => {
+                const currentContent = textarea.value;
+                if (currentContent.trim()) {
+                    // Simulate regeneration by adding timestamp and note
+                    const regeneratedNote = currentContent + '\n\n---\n[Note regenerated by AI on ' + new Date().toLocaleString() + ']';
+                    textarea.value = regeneratedNote;
+                    showToolFeedback('Note regenerated successfully!', 'success');
+                } else {
+                    showToolFeedback('Please add some content before regenerating.', 'error');
+                }
+                
+                // Remove loading state
+                button.classList.remove('ai-loading');
+                button.disabled = false;
+                button.innerHTML = originalText;
+            }, 2500);
+        }
+        
+        function enhanceNote(format) {
+            const textarea = document.getElementById(`${format}-textarea`);
+            const button = event.target.closest('.toolbar-btn');
+            if (!textarea) return;
+            
+            // Add loading state
+            button.classList.add('ai-loading');
+            button.disabled = true;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enhancing...';
+            
+            showToolFeedback('AI is enhancing your note with clinical terminology...', 'info');
+            
+            // Simulate AI processing delay
+            setTimeout(() => {
+                const currentContent = textarea.value;
+                if (currentContent.trim()) {
+                    // Simulate enhancement by improving clinical language
+                    const enhancedNote = currentContent + '\n\n---\n[Enhanced with clinical terminology and professional formatting on ' + new Date().toLocaleString() + ']';
+                    textarea.value = enhancedNote;
+                    showToolFeedback('Note enhanced successfully!', 'success');
+                } else {
+                    showToolFeedback('Please add some content before enhancing.', 'error');
+                }
+                
+                // Remove loading state
+                button.classList.remove('ai-loading');
+                button.disabled = false;
+                button.innerHTML = originalText;
+            }, 2000);
+        }
+        
+        function spellCheckNote(format) {
+            const textarea = document.getElementById(`${format}-textarea`);
+            const button = event.target.closest('.toolbar-btn');
+            if (!textarea) return;
+            
+            // Add loading state
+            button.classList.add('ai-loading');
+            button.disabled = true;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
+            
+            showToolFeedback('Running spell check...', 'info');
+            
+            // Simulate spell check processing
+            setTimeout(() => {
+                const currentContent = textarea.value;
+                if (currentContent.trim()) {
+                    // Simple spell check simulation
+                    const commonMisspellings = {
+                        'thier': 'their',
+                        'recieve': 'receive',
+                        'seperate': 'separate',
+                        'occured': 'occurred',
+                        'neccessary': 'necessary',
+                        'acommodate': 'accommodate',
+                        'independant': 'independent',
+                        'definately': 'definitely'
+                    };
+                    
+                    let correctedContent = currentContent;
+                    let correctionCount = 0;
+                    
+                    for (const [wrong, correct] of Object.entries(commonMisspellings)) {
+                        const regex = new RegExp('\\b' + wrong + '\\b', 'gi');
+                        if (regex.test(correctedContent)) {
+                            correctedContent = correctedContent.replace(regex, correct);
+                            correctionCount++;
+                        }
+                    }
+                    
+                    textarea.value = correctedContent;
+                    
+                    if (correctionCount > 0) {
+                        showToolFeedback(`Spell check complete! Fixed ${correctionCount} error(s).`, 'success');
+                    } else {
+                        showToolFeedback('Spell check complete! No errors found.', 'success');
+                    }
+                } else {
+                    showToolFeedback('Please add some content before spell checking.', 'error');
+                }
+                
+                // Remove loading state
+                button.classList.remove('ai-loading');
+                button.disabled = false;
+                button.innerHTML = originalText;
+            }, 1500);
+        }
+
+        // Auto-save functionality
+        let autoSaveTimeout;
+        document.addEventListener('input', function(e) {
+            if (e.target.classList.contains('note-textarea')) {
+                clearTimeout(autoSaveTimeout);
+                autoSaveTimeout = setTimeout(() => {
+                    // Simulate auto-save
+                    const format = e.target.id.replace('-textarea', '');
+                    console.log(`Auto-saving ${format} note...`);
+                    
+                    // Visual feedback for auto-save
+                    const feedback = document.createElement('div');
+                    feedback.style.cssText = 'position: fixed; bottom: 20px; right: 20px; background: var(--text-secondary); color: white; padding: 8px 12px; border-radius: 6px; font-size: 0.875rem; z-index: 1000;';
+                    feedback.textContent = 'Draft saved automatically';
+                    document.body.appendChild(feedback);
+                    
+                    setTimeout(() => feedback.remove(), 2000);
+                }, 3000); // Auto-save after 3 seconds of inactivity
+            }
+        });
+    </script>
+</body>
+</html>
